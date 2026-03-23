@@ -5,7 +5,21 @@ import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/u
 import { BookOpen } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
 
-interface BookDetailModalProps {
+function CoverImage({ url, title }: { url: string | null; title: string }) {
+  const [failed, setFailed] = useState(false);
+  return (
+    <div className="mx-auto w-48 aspect-[2/3] overflow-hidden rounded-lg bg-muted shadow-md">
+      {url && !failed ? (
+        <img src={url} alt={title} onError={() => setFailed(true)} loading="lazy" className="h-full w-full object-cover" />
+      ) : (
+        <div className="flex h-full w-full items-center justify-center bg-gradient-to-br from-secondary to-accent">
+          <BookOpen className="h-16 w-16 text-muted-foreground/40" />
+        </div>
+      )}
+    </div>
+  );
+}
+
   book: Book | null;
   open: boolean;
   onOpenChange: (open: boolean) => void;
