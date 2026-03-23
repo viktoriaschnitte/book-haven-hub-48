@@ -98,7 +98,7 @@ export function BookFormDialog({ open, onOpenChange, onSubmit, editBook }: BookF
       genre: genre && genre !== "none" ? genre : null,
       notes: notes || null,
       rating: rating || null,
-      series_name: seriesName || null,
+      series_name: seriesName && seriesName !== "none" ? seriesName : null,
       series_number: seriesNumber ? parseInt(seriesNumber) : null,
     });
     onOpenChange(false);
