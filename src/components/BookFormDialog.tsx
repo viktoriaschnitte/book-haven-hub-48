@@ -95,7 +95,7 @@ export function BookFormDialog({ open, onOpenChange, onSubmit, editBook }: BookF
       author,
       page_count: pageCount ? parseInt(pageCount) : null,
       cover_url: coverUrl || null,
-      genre: genre || null,
+      genre: genre && genre !== "none" ? genre : null,
       notes: notes || null,
       rating: rating || null,
       series_name: seriesName || null,
