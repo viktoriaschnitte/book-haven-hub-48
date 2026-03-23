@@ -63,6 +63,8 @@ export type Database = {
           notes: string | null
           page_count: number | null
           rating: number | null
+          series_name: string | null
+          series_number: number | null
           title: string
           updated_at: string
           user_id: string
@@ -76,6 +78,8 @@ export type Database = {
           notes?: string | null
           page_count?: number | null
           rating?: number | null
+          series_name?: string | null
+          series_number?: number | null
           title: string
           updated_at?: string
           user_id: string
@@ -89,6 +93,8 @@ export type Database = {
           notes?: string | null
           page_count?: number | null
           rating?: number | null
+          series_name?: string | null
+          series_number?: number | null
           title?: string
           updated_at?: string
           user_id?: string

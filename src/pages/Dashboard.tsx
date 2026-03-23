@@ -193,7 +193,7 @@ export default function Dashboard() {
       </main>
 
       <BookFormDialog open={bookFormOpen} onOpenChange={setBookFormOpen} onSubmit={handleBookSubmit} editBook={editingBook} />
-      <BookDetailModal book={detailBook} open={!!detailBook} onOpenChange={(o) => !o && setDetailBook(null)} />
+      <BookDetailModal book={detailBook} open={!!detailBook} onOpenChange={(o) => !o && setDetailBook(null)} onNavigate={setDetailBook} />
       <ListAssignDialog open={!!listAssignBook} onOpenChange={(o) => !o && setListAssignBook(null)} book={listAssignBook} />
       <SettingsDialog open={settingsOpen} onOpenChange={setSettingsOpen} />
       <CreateListDialog open={createListOpen} onOpenChange={setCreateListOpen} onSubmit={(name) => createList.mutate(name)} />
