@@ -1,8 +1,31 @@
+import { useState } from "react";
 import { Book } from "@/hooks/useBooks";
 import { RatingDisplay } from "./RatingDisplay";
 import { BookOpen, Edit, Trash2, MoreVertical } from "lucide-react";
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from "@/components/ui/dropdown-menu";
 import { Button } from "@/components/ui/button";
+
+function BookCover({ url, title, className }: { url: string | null; title: string; className?: string }) {
+  const [failed, setFailed] = useState(false);
+
+  if (!url || failed) {
+    return (
+      <div className={`flex h-full w-full items-center justify-center bg-gradient-to-br from-secondary to-accent ${className ?? ""}`}>
+        <BookOpen className="h-1/3 w-1/3 text-muted-foreground/50" />
+      </div>
+    );
+  }
+
+  return (
+    <img
+      src={url}
+      alt={title}
+      onError={() => setFailed(true)}
+      loading="lazy"
+      className={`h-full w-full object-cover ${className ?? ""}`}
+    />
+  );
+}
 
 interface BookCardProps {
   book: Book;
