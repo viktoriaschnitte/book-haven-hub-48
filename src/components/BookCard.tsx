@@ -9,20 +9,21 @@ interface BookCardProps {
   onEdit: (book: Book) => void;
   onDelete: (id: string) => void;
   onManageLists: (book: Book) => void;
+  onViewDetail: (book: Book) => void;
   view: "grid" | "list";
 }
 
-export function BookCard({ book, onEdit, onDelete, onManageLists, view }: BookCardProps) {
+export function BookCard({ book, onEdit, onDelete, onManageLists, onViewDetail, view }: BookCardProps) {
   if (view === "list") {
     return (
       <div className="flex items-center gap-4 rounded-lg border bg-card p-3 transition-colors hover:bg-accent/50 animate-fade-in">
-        <div className="h-16 w-11 flex-shrink-0 overflow-hidden rounded-sm bg-muted">
+        <button onClick={() => onViewDetail(book)} className="h-16 w-11 flex-shrink-0 overflow-hidden rounded-sm bg-muted cursor-pointer hover:ring-2 hover:ring-primary/40 transition-all">
           {book.cover_url ? (
             <img src={book.cover_url} alt={book.title} className="h-full w-full object-cover" />
           ) : (
             <div className="flex h-full w-full items-center justify-center"><BookOpen className="h-5 w-5 text-muted-foreground" /></div>
           )}
-        </div>
+        </button>
         <div className="flex-1 min-w-0">
           <h3 className="font-display font-semibold truncate">{book.title}</h3>
           <p className="text-sm text-muted-foreground truncate">{book.author}</p>
@@ -43,7 +44,7 @@ export function BookCard({ book, onEdit, onDelete, onManageLists, view }: BookCa
 
   return (
     <div className="group relative overflow-hidden rounded-lg border bg-card book-shadow hover:book-shadow-hover transition-all duration-300 animate-fade-in">
-      <div className="aspect-[2/3] w-full overflow-hidden bg-muted">
+      <button onClick={() => onViewDetail(book)} className="aspect-[2/3] w-full overflow-hidden bg-muted cursor-pointer block">
         {book.cover_url ? (
           <img src={book.cover_url} alt={book.title} className="h-full w-full object-cover transition-transform duration-300 group-hover:scale-105" />
         ) : (
@@ -51,7 +52,7 @@ export function BookCard({ book, onEdit, onDelete, onManageLists, view }: BookCa
             <BookOpen className="h-12 w-12 text-muted-foreground/50" />
           </div>
         )}
-      </div>
+      </button>
       <div className="p-3 space-y-1.5">
         <h3 className="font-display font-semibold text-sm leading-tight truncate">{book.title}</h3>
         <p className="text-xs text-muted-foreground truncate">{book.author}</p>

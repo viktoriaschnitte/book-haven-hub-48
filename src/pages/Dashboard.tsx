@@ -4,6 +4,7 @@ import { useBooks, Book } from "@/hooks/useBooks";
 import { useLists } from "@/hooks/useLists";
 import { BookCard } from "@/components/BookCard";
 import { BookFormDialog } from "@/components/BookFormDialog";
+import { BookDetailModal } from "@/components/BookDetailModal";
 import { ListAssignDialog } from "@/components/ListAssignDialog";
 import { SettingsDialog } from "@/components/SettingsDialog";
 import { CreateListDialog } from "@/components/CreateListDialog";
@@ -27,6 +28,7 @@ export default function Dashboard() {
 
   const [bookFormOpen, setBookFormOpen] = useState(false);
   const [editingBook, setEditingBook] = useState<Book | null>(null);
+  const [detailBook, setDetailBook] = useState<Book | null>(null);
   const [listAssignBook, setListAssignBook] = useState<Book | null>(null);
   const [settingsOpen, setSettingsOpen] = useState(false);
   const [createListOpen, setCreateListOpen] = useState(false);
@@ -169,13 +171,13 @@ export default function Dashboard() {
         ) : view === "grid" ? (
           <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 xl:grid-cols-6 gap-4">
             {filtered.map((book) => (
-              <BookCard key={book.id} book={book} view="grid" onEdit={(b) => { setEditingBook(b); setBookFormOpen(true); }} onDelete={(id) => deleteBook.mutate(id)} onManageLists={setListAssignBook} />
+              <BookCard key={book.id} book={book} view="grid" onEdit={(b) => { setEditingBook(b); setBookFormOpen(true); }} onDelete={(id) => deleteBook.mutate(id)} onManageLists={setListAssignBook} onViewDetail={setDetailBook} />
             ))}
           </div>
         ) : (
           <div className="space-y-2">
             {filtered.map((book) => (
-              <BookCard key={book.id} book={book} view="list" onEdit={(b) => { setEditingBook(b); setBookFormOpen(true); }} onDelete={(id) => deleteBook.mutate(id)} onManageLists={setListAssignBook} />
+              <BookCard key={book.id} book={book} view="list" onEdit={(b) => { setEditingBook(b); setBookFormOpen(true); }} onDelete={(id) => deleteBook.mutate(id)} onManageLists={setListAssignBook} onViewDetail={setDetailBook} />
             ))}
           </div>
         )}
@@ -191,6 +193,7 @@ export default function Dashboard() {
       </main>
 
       <BookFormDialog open={bookFormOpen} onOpenChange={setBookFormOpen} onSubmit={handleBookSubmit} editBook={editingBook} />
+      <BookDetailModal book={detailBook} open={!!detailBook} onOpenChange={(o) => !o && setDetailBook(null)} />
       <ListAssignDialog open={!!listAssignBook} onOpenChange={(o) => !o && setListAssignBook(null)} book={listAssignBook} />
       <SettingsDialog open={settingsOpen} onOpenChange={setSettingsOpen} />
       <CreateListDialog open={createListOpen} onOpenChange={setCreateListOpen} onSubmit={(name) => createList.mutate(name)} />
