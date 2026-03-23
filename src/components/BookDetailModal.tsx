@@ -20,6 +20,7 @@ function CoverImage({ url, title }: { url: string | null; title: string }) {
   );
 }
 
+interface BookDetailModalProps {
   book: Book | null;
   open: boolean;
   onOpenChange: (open: boolean) => void;
