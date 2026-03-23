@@ -1,8 +1,31 @@
+import { useState } from "react";
 import { Book } from "@/hooks/useBooks";
 import { RatingDisplay } from "./RatingDisplay";
 import { BookOpen, Edit, Trash2, MoreVertical } from "lucide-react";
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from "@/components/ui/dropdown-menu";
 import { Button } from "@/components/ui/button";
+
+function BookCover({ url, title, className }: { url: string | null; title: string; className?: string }) {
+  const [failed, setFailed] = useState(false);
+
+  if (!url || failed) {
+    return (
+      <div className={`flex h-full w-full items-center justify-center bg-gradient-to-br from-secondary to-accent ${className ?? ""}`}>
+        <BookOpen className="h-1/3 w-1/3 text-muted-foreground/50" />
+      </div>
+    );
+  }
+
+  return (
+    <img
+      src={url}
+      alt={title}
+      onError={() => setFailed(true)}
+      loading="lazy"
+      className={`h-full w-full object-cover ${className ?? ""}`}
+    />
+  );
+}
 
 interface BookCardProps {
   book: Book;
@@ -18,11 +41,7 @@ export function BookCard({ book, onEdit, onDelete, onManageLists, onViewDetail, 
     return (
       <div className="flex items-center gap-4 rounded-lg border bg-card p-3 transition-colors hover:bg-accent/50 animate-fade-in">
         <button onClick={() => onViewDetail(book)} className="h-16 w-11 flex-shrink-0 overflow-hidden rounded-sm bg-muted cursor-pointer hover:ring-2 hover:ring-primary/40 transition-all">
-          {book.cover_url ? (
-            <img src={book.cover_url} alt={book.title} className="h-full w-full object-cover" />
-          ) : (
-            <div className="flex h-full w-full items-center justify-center"><BookOpen className="h-5 w-5 text-muted-foreground" /></div>
-          )}
+          <BookCover url={book.cover_url} title={book.title} />
         </button>
         <div className="flex-1 min-w-0">
           <h3 className="font-display font-semibold truncate">{book.title}</h3>
@@ -45,13 +64,7 @@ export function BookCard({ book, onEdit, onDelete, onManageLists, onViewDetail, 
   return (
     <div className="group relative overflow-hidden rounded-lg border bg-card book-shadow hover:book-shadow-hover transition-all duration-300 animate-fade-in">
       <button onClick={() => onViewDetail(book)} className="aspect-[2/3] w-full overflow-hidden bg-muted cursor-pointer block">
-        {book.cover_url ? (
-          <img src={book.cover_url} alt={book.title} className="h-full w-full object-cover transition-transform duration-300 group-hover:scale-105" />
-        ) : (
-          <div className="flex h-full w-full items-center justify-center bg-gradient-to-br from-secondary to-accent">
-            <BookOpen className="h-12 w-12 text-muted-foreground/50" />
-          </div>
-        )}
+        <BookCover url={book.cover_url} title={book.title} className="transition-transform duration-300 group-hover:scale-105" />
       </button>
       <div className="p-3 space-y-1.5">
         <h3 className="font-display font-semibold text-sm leading-tight truncate">{book.title}</h3>

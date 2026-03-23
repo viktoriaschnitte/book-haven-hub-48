@@ -1,8 +1,24 @@
+import { useState } from "react";
 import { Book } from "@/hooks/useBooks";
 import { RatingDisplay } from "./RatingDisplay";
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
 import { BookOpen } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
+
+function CoverImage({ url, title }: { url: string | null; title: string }) {
+  const [failed, setFailed] = useState(false);
+  return (
+    <div className="mx-auto w-48 aspect-[2/3] overflow-hidden rounded-lg bg-muted shadow-md">
+      {url && !failed ? (
+        <img src={url} alt={title} onError={() => setFailed(true)} loading="lazy" className="h-full w-full object-cover" />
+      ) : (
+        <div className="flex h-full w-full items-center justify-center bg-gradient-to-br from-secondary to-accent">
+          <BookOpen className="h-16 w-16 text-muted-foreground/40" />
+        </div>
+      )}
+    </div>
+  );
+}
 
 interface BookDetailModalProps {
   book: Book | null;
@@ -21,15 +37,7 @@ export function BookDetailModal({ book, open, onOpenChange }: BookDetailModalPro
         </DialogHeader>
         <div className="space-y-5">
           {/* Cover */}
-          <div className="mx-auto w-48 aspect-[2/3] overflow-hidden rounded-lg bg-muted shadow-md">
-            {book.cover_url ? (
-              <img src={book.cover_url} alt={book.title} className="h-full w-full object-cover" />
-            ) : (
-              <div className="flex h-full w-full items-center justify-center bg-gradient-to-br from-secondary to-accent">
-                <BookOpen className="h-16 w-16 text-muted-foreground/40" />
-              </div>
-            )}
-          </div>
+          <CoverImage url={book.cover_url} title={book.title} />
 
           {/* Meta */}
           <div className="space-y-3">
