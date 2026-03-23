@@ -41,11 +41,7 @@ export function BookCard({ book, onEdit, onDelete, onManageLists, onViewDetail, 
     return (
       <div className="flex items-center gap-4 rounded-lg border bg-card p-3 transition-colors hover:bg-accent/50 animate-fade-in">
         <button onClick={() => onViewDetail(book)} className="h-16 w-11 flex-shrink-0 overflow-hidden rounded-sm bg-muted cursor-pointer hover:ring-2 hover:ring-primary/40 transition-all">
-          {book.cover_url ? (
-            <img src={book.cover_url} alt={book.title} className="h-full w-full object-cover" />
-          ) : (
-            <div className="flex h-full w-full items-center justify-center"><BookOpen className="h-5 w-5 text-muted-foreground" /></div>
-          )}
+          <BookCover url={book.cover_url} title={book.title} />
         </button>
         <div className="flex-1 min-w-0">
           <h3 className="font-display font-semibold truncate">{book.title}</h3>
