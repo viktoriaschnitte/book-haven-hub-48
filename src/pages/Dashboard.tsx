@@ -2,6 +2,7 @@ import { useState, useMemo } from "react";
 import { useAuth } from "@/hooks/useAuth";
 import { useBooks, Book } from "@/hooks/useBooks";
 import { useLists } from "@/hooks/useLists";
+import { useSettings } from "@/hooks/useSettings";
 import { BookCard } from "@/components/BookCard";
 import { BookFormDialog } from "@/components/BookFormDialog";
 import { BookDetailModal } from "@/components/BookDetailModal";
@@ -19,6 +20,9 @@ export default function Dashboard() {
   const { user, signOut } = useAuth();
   const { books, addBook, updateBook, deleteBook } = useBooks();
   const { lists, assignments, createList, deleteList } = useLists();
+  const { settings } = useSettings();
+  const isStars = settings.rating_system === "stars";
+  const maxRating = isStars ? 5 : 10;
 
   const [view, setView] = useState<"grid" | "list">("grid");
   const [search, setSearch] = useState("");
@@ -52,8 +56,18 @@ export default function Dashboard() {
       result = result.filter((b) => bookIds.includes(b.id));
     }
     if (filterRating !== "all") {
-      const min = parseInt(filterRating);
-      result = result.filter((b) => (b.rating ?? 0) >= min);
+      const target = parseInt(filterRating);
+      if (isStars) {
+        // Stars: rating is stored 1-10, star value = ceil(rating/2)
+        const low = (target - 1) * 2 + 1;
+        const high = target * 2;
+        result = result.filter((b) => {
+          const r = b.rating ?? 0;
+          return r >= low && r <= high;
+        });
+      } else {
+        result = result.filter((b) => (b.rating ?? 0) === target);
+      }
     }
     return result;
   }, [books, search, filterGenre, filterList, filterRating, assignments]);
@@ -115,14 +129,16 @@ export default function Dashboard() {
               </SelectContent>
             </Select>
             <Select value={filterRating} onValueChange={setFilterRating}>
-              <SelectTrigger className="w-[130px]"><SelectValue placeholder="Bewertung" /></SelectTrigger>
+              <SelectTrigger className="w-[150px]"><SelectValue placeholder="Bewertung" /></SelectTrigger>
               <SelectContent>
                 <SelectItem value="all">Alle</SelectItem>
-                <SelectItem value="2">★ 1+</SelectItem>
-                <SelectItem value="4">★★ 2+</SelectItem>
-                <SelectItem value="6">★★★ 3+</SelectItem>
-                <SelectItem value="8">★★★★ 4+</SelectItem>
-                <SelectItem value="10">★★★★★ 5</SelectItem>
+                {Array.from({ length: maxRating }, (_, i) => {
+                  const val = i + 1;
+                  const label = isStars
+                    ? "★".repeat(val) + "☆".repeat(maxRating - val)
+                    : `${val} / ${maxRating}`;
+                  return <SelectItem key={val} value={String(val)}>{label}</SelectItem>;
+                })}
               </SelectContent>
             </Select>
             <div className="flex rounded-lg border bg-card">
