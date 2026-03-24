@@ -27,9 +27,7 @@ interface BookFormDialogProps {
 }
 
 const DEFAULT_GENRES = [
-  "Roman", "Krimi", "Thriller", "Fantasy", "Science-Fiction",
-  "Sachbuch", "Biografie", "Historisch", "Horror", "Lyrik",
-  "Kinderbuch", "Jugendbuch", "Philosophie", "Ratgeber",
+  "Roman", "Krimi", "Thriller", "Fantasy", "Horror",
 ];
 
 export function BookFormDialog({ open, onOpenChange, onSubmit, editBook }: BookFormDialogProps) {
