@@ -56,8 +56,18 @@ export default function Dashboard() {
       result = result.filter((b) => bookIds.includes(b.id));
     }
     if (filterRating !== "all") {
-      const min = parseInt(filterRating);
-      result = result.filter((b) => (b.rating ?? 0) >= min);
+      const target = parseInt(filterRating);
+      if (isStars) {
+        // Stars: rating is stored 1-10, star value = ceil(rating/2)
+        const low = (target - 1) * 2 + 1;
+        const high = target * 2;
+        result = result.filter((b) => {
+          const r = b.rating ?? 0;
+          return r >= low && r <= high;
+        });
+      } else {
+        result = result.filter((b) => (b.rating ?? 0) === target);
+      }
     }
     return result;
   }, [books, search, filterGenre, filterList, filterRating, assignments]);
