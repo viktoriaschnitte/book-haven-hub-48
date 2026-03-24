@@ -129,14 +129,16 @@ export default function Dashboard() {
               </SelectContent>
             </Select>
             <Select value={filterRating} onValueChange={setFilterRating}>
-              <SelectTrigger className="w-[130px]"><SelectValue placeholder="Bewertung" /></SelectTrigger>
+              <SelectTrigger className="w-[150px]"><SelectValue placeholder="Bewertung" /></SelectTrigger>
               <SelectContent>
                 <SelectItem value="all">Alle</SelectItem>
-                <SelectItem value="2">★ 1+</SelectItem>
-                <SelectItem value="4">★★ 2+</SelectItem>
-                <SelectItem value="6">★★★ 3+</SelectItem>
-                <SelectItem value="8">★★★★ 4+</SelectItem>
-                <SelectItem value="10">★★★★★ 5</SelectItem>
+                {Array.from({ length: maxRating }, (_, i) => {
+                  const val = i + 1;
+                  const label = isStars
+                    ? "★".repeat(val) + "☆".repeat(maxRating - val)
+                    : `${val} / ${maxRating}`;
+                  return <SelectItem key={val} value={String(val)}>{label}</SelectItem>;
+                })}
               </SelectContent>
             </Select>
             <div className="flex rounded-lg border bg-card">
