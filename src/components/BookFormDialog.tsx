@@ -104,7 +104,7 @@ export function BookFormDialog({ open, onOpenChange, onSubmit, editBook }: BookF
 
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
-      <DialogContent className="sm:max-w-lg max-h-[90vh] overflow-y-auto">
+      <DialogContent className="sm:max-w-lg max-h-[90vh] overflow-y-auto subtle-scrollbar">
         <DialogHeader>
           <DialogTitle className="font-display">{editBook ? "Buch bearbeiten" : "Neues Buch hinzufügen"}</DialogTitle>
         </DialogHeader>

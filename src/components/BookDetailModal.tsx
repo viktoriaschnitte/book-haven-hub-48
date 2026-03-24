@@ -40,7 +40,7 @@ export function BookDetailModal({ book, open, onOpenChange, onNavigate }: BookDe
 
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
-      <DialogContent className="sm:max-w-lg max-h-[85vh] overflow-y-auto">
+      <DialogContent className="sm:max-w-lg max-h-[85vh] overflow-y-auto subtle-scrollbar">
         <DialogHeader>
           <DialogTitle className="font-display text-xl">{book.title}</DialogTitle>
         </DialogHeader>
