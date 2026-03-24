@@ -2,6 +2,7 @@ import { useState, useMemo } from "react";
 import { useAuth } from "@/hooks/useAuth";
 import { useBooks, Book } from "@/hooks/useBooks";
 import { useLists } from "@/hooks/useLists";
+import { useSettings } from "@/hooks/useSettings";
 import { BookCard } from "@/components/BookCard";
 import { BookFormDialog } from "@/components/BookFormDialog";
 import { BookDetailModal } from "@/components/BookDetailModal";
