@@ -20,6 +20,9 @@ export default function Dashboard() {
   const { user, signOut } = useAuth();
   const { books, addBook, updateBook, deleteBook } = useBooks();
   const { lists, assignments, createList, deleteList } = useLists();
+  const { settings } = useSettings();
+  const isStars = settings.rating_system === "stars";
+  const maxRating = isStars ? 5 : 10;
 
   const [view, setView] = useState<"grid" | "list">("grid");
   const [search, setSearch] = useState("");
