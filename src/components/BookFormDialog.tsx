@@ -68,13 +68,6 @@ export function BookFormDialog({ open, onOpenChange, onSubmit, editBook }: BookF
     }
   }, [editBook, open]);
 
-  const handleAddGenre = () => {
-    if (newGenre.trim()) {
-      setGenre(newGenre.trim());
-      setAddingGenre(false);
-      setNewGenre("");
-    }
-  };
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
