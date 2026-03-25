@@ -4,6 +4,7 @@ import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 import { Switch } from "@/components/ui/switch";
 import { useSettings } from "@/hooks/useSettings";
 import { Moon, Sun } from "lucide-react";
+import { GenreManager } from "./GenreManager";
 
 const COLOR_PRESETS = [
   { label: "Bernstein", value: "24 70% 45%" },
