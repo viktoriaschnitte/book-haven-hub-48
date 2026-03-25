@@ -27,9 +27,6 @@ interface BookFormDialogProps {
   editBook?: Book | null;
 }
 
-const DEFAULT_GENRES = [
-  "Roman", "Krimi", "Thriller", "Fantasy", "Horror",
-];
 
 export function BookFormDialog({ open, onOpenChange, onSubmit, editBook }: BookFormDialogProps) {
   const { books } = useBooks();
