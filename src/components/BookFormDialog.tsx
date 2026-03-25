@@ -7,6 +7,7 @@ import { Textarea } from "@/components/ui/textarea";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { RatingDisplay } from "./RatingDisplay";
 import { Book, useBooks } from "@/hooks/useBooks";
+import { useGenres } from "@/hooks/useGenres";
 import { Save, Plus } from "lucide-react";
 
 interface BookFormDialogProps {
@@ -26,11 +27,9 @@ interface BookFormDialogProps {
   editBook?: Book | null;
 }
 
-const DEFAULT_GENRES = [
-  "Roman", "Krimi", "Thriller", "Fantasy", "Horror",
-];
 
 export function BookFormDialog({ open, onOpenChange, onSubmit, editBook }: BookFormDialogProps) {
+  const { genres: userGenres } = useGenres();
   const { books } = useBooks();
 
   const [title, setTitle] = useState("");
@@ -42,15 +41,8 @@ export function BookFormDialog({ open, onOpenChange, onSubmit, editBook }: BookF
   const [rating, setRating] = useState<number>(0);
   const [seriesName, setSeriesName] = useState("");
   const [seriesNumber, setSeriesNumber] = useState("");
-  const [addingGenre, setAddingGenre] = useState(false);
-  const [newGenre, setNewGenre] = useState("");
 
-  // Collect all unique genres from existing books + defaults
-  const allGenres = useMemo(() => {
-    const set = new Set(DEFAULT_GENRES);
-    books.forEach((b) => { if (b.genre) set.add(b.genre); });
-    return Array.from(set).sort();
-  }, [books]);
+  const allGenres = useMemo(() => userGenres.map((g) => g.name), [userGenres]);
 
   // Collect unique series names
   const seriesNames = useMemo(() => {
@@ -74,17 +66,8 @@ export function BookFormDialog({ open, onOpenChange, onSubmit, editBook }: BookF
       setTitle(""); setAuthor(""); setPageCount(""); setCoverUrl("");
       setGenre(""); setNotes(""); setRating(0); setSeriesName(""); setSeriesNumber("");
     }
-    setAddingGenre(false);
-    setNewGenre("");
   }, [editBook, open]);
 
-  const handleAddGenre = () => {
-    if (newGenre.trim()) {
-      setGenre(newGenre.trim());
-      setAddingGenre(false);
-      setNewGenre("");
-    }
-  };
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
@@ -124,29 +107,13 @@ export function BookFormDialog({ open, onOpenChange, onSubmit, editBook }: BookF
           <div className="grid grid-cols-2 gap-4">
             <div className="space-y-2">
               <Label>Genre</Label>
-              {addingGenre ? (
-                <div className="flex gap-2">
-                  <Input
-                    autoFocus
-                    value={newGenre}
-                    onChange={(e) => setNewGenre(e.target.value)}
-                    placeholder="Neues Genre..."
-                    onKeyDown={(e) => e.key === "Enter" && (e.preventDefault(), handleAddGenre())}
-                  />
-                  <Button type="button" size="sm" onClick={handleAddGenre} className="shrink-0">
-                    <Plus className="h-4 w-4" />
-                  </Button>
-                </div>
-              ) : (
-                <Select value={genre} onValueChange={(v) => v === "__new__" ? setAddingGenre(true) : setGenre(v)}>
-                  <SelectTrigger><SelectValue placeholder="Genre wählen" /></SelectTrigger>
-                  <SelectContent>
-                    <SelectItem value="none">Kein Genre</SelectItem>
-                    {allGenres.map((g) => <SelectItem key={g} value={g}>{g}</SelectItem>)}
-                    <SelectItem value="__new__" className="text-primary font-medium">+ Neues Genre</SelectItem>
-                  </SelectContent>
-                </Select>
-              )}
+              <Select value={genre} onValueChange={setGenre}>
+                <SelectTrigger><SelectValue placeholder="Genre wählen" /></SelectTrigger>
+                <SelectContent>
+                  <SelectItem value="none">Kein Genre</SelectItem>
+                  {allGenres.map((g) => <SelectItem key={g} value={g}>{g}</SelectItem>)}
+                </SelectContent>
+              </Select>
             </div>
             <div className="space-y-2">
               <Label htmlFor="pages">Seitenzahl</Label>
