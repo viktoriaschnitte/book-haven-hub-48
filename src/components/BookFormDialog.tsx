@@ -43,12 +43,7 @@ export function BookFormDialog({ open, onOpenChange, onSubmit, editBook }: BookF
   const [addingGenre, setAddingGenre] = useState(false);
   const [newGenre, setNewGenre] = useState("");
 
-  // Collect all unique genres from existing books + defaults
-  const allGenres = useMemo(() => {
-    const set = new Set(DEFAULT_GENRES);
-    books.forEach((b) => { if (b.genre) set.add(b.genre); });
-    return Array.from(set).sort();
-  }, [books]);
+  const allGenres = useMemo(() => userGenres.map((g) => g.name), [userGenres]);
 
   // Collect unique series names
   const seriesNames = useMemo(() => {

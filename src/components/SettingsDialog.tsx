@@ -70,6 +70,9 @@ export function SettingsDialog({ open, onOpenChange }: SettingsDialogProps) {
             </RadioGroup>
           </div>
 
+          {/* Genre management */}
+          <GenreManager />
+
           {/* Color scheme */}
           <div className="space-y-3">
             <Label className="text-base font-medium">Farbschema</Label>
