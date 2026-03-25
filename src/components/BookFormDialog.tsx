@@ -41,8 +41,6 @@ export function BookFormDialog({ open, onOpenChange, onSubmit, editBook }: BookF
   const [rating, setRating] = useState<number>(0);
   const [seriesName, setSeriesName] = useState("");
   const [seriesNumber, setSeriesNumber] = useState("");
-  const [addingGenre, setAddingGenre] = useState(false);
-  const [newGenre, setNewGenre] = useState("");
 
   const allGenres = useMemo(() => userGenres.map((g) => g.name), [userGenres]);
 
