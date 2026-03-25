@@ -66,8 +66,6 @@ export function BookFormDialog({ open, onOpenChange, onSubmit, editBook }: BookF
       setTitle(""); setAuthor(""); setPageCount(""); setCoverUrl("");
       setGenre(""); setNotes(""); setRating(0); setSeriesName(""); setSeriesNumber("");
     }
-    setAddingGenre(false);
-    setNewGenre("");
   }, [editBook, open]);
 
   const handleAddGenre = () => {
