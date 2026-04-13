@@ -66,6 +66,7 @@ export type Database = {
           series_name: string | null
           series_number: number | null
           title: string
+          tropes: string[] | null
           updated_at: string
           user_id: string
         }
@@ -81,6 +82,7 @@ export type Database = {
           series_name?: string | null
           series_number?: number | null
           title: string
+          tropes?: string[] | null
           updated_at?: string
           user_id: string
         }
@@ -96,6 +98,7 @@ export type Database = {
           series_name?: string | null
           series_number?: number | null
           title?: string
+          tropes?: string[] | null
           updated_at?: string
           user_id?: string
         }
@@ -193,6 +196,27 @@ export type Database = {
           primary_color?: string
           rating_system?: string
           updated_at?: string
+          user_id?: string
+        }
+        Relationships: []
+      }
+      user_tropes: {
+        Row: {
+          created_at: string
+          id: string
+          name: string
+          user_id: string
+        }
+        Insert: {
+          created_at?: string
+          id?: string
+          name: string
+          user_id: string
+        }
+        Update: {
+          created_at?: string
+          id?: string
+          name?: string
           user_id?: string
         }
         Relationships: []

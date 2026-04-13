@@ -5,10 +5,12 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
+import { Checkbox } from "@/components/ui/checkbox";
 import { RatingDisplay } from "./RatingDisplay";
 import { Book, useBooks } from "@/hooks/useBooks";
 import { useGenres } from "@/hooks/useGenres";
-import { Save, Plus } from "lucide-react";
+import { useTropes } from "@/hooks/useTropes";
+import { Save } from "lucide-react";
 
 interface BookFormDialogProps {
   open: boolean;
@@ -23,13 +25,14 @@ interface BookFormDialogProps {
     rating: number | null;
     series_name: string | null;
     series_number: number | null;
+    tropes: string[];
   }) => void;
   editBook?: Book | null;
 }
 
-
 export function BookFormDialog({ open, onOpenChange, onSubmit, editBook }: BookFormDialogProps) {
   const { genres: userGenres } = useGenres();
+  const { tropes: userTropes } = useTropes();
   const { books } = useBooks();
 
   const [title, setTitle] = useState("");
@@ -39,12 +42,13 @@ export function BookFormDialog({ open, onOpenChange, onSubmit, editBook }: BookF
   const [genre, setGenre] = useState("");
   const [notes, setNotes] = useState("");
   const [rating, setRating] = useState<number>(0);
+  const [seriesMode, setSeriesMode] = useState<"none" | "existing" | "new">("none");
   const [seriesName, setSeriesName] = useState("");
   const [seriesNumber, setSeriesNumber] = useState("");
+  const [selectedTropes, setSelectedTropes] = useState<string[]>([]);
 
   const allGenres = useMemo(() => userGenres.map((g) => g.name), [userGenres]);
 
-  // Collect unique series names
   const seriesNames = useMemo(() => {
     const set = new Set<string>();
     books.forEach((b) => { if (b.series_name) set.add(b.series_name); });
@@ -60,17 +64,36 @@ export function BookFormDialog({ open, onOpenChange, onSubmit, editBook }: BookF
       setGenre(editBook.genre ?? "");
       setNotes(editBook.notes ?? "");
       setRating(editBook.rating ?? 0);
-      setSeriesName(editBook.series_name ?? "");
       setSeriesNumber(editBook.series_number?.toString() ?? "");
+      setSelectedTropes((editBook as any).tropes ?? []);
+      if (editBook.series_name) {
+        if (seriesNames.includes(editBook.series_name)) {
+          setSeriesMode("existing");
+          setSeriesName(editBook.series_name);
+        } else {
+          setSeriesMode("new");
+          setSeriesName(editBook.series_name);
+        }
+      } else {
+        setSeriesMode("none");
+        setSeriesName("");
+      }
     } else {
       setTitle(""); setAuthor(""); setPageCount(""); setCoverUrl("");
-      setGenre(""); setNotes(""); setRating(0); setSeriesName(""); setSeriesNumber("");
+      setGenre(""); setNotes(""); setRating(0); setSeriesMode("none");
+      setSeriesName(""); setSeriesNumber(""); setSelectedTropes([]);
     }
   }, [editBook, open]);
 
+  const toggleTrope = (name: string) => {
+    setSelectedTropes((prev) =>
+      prev.includes(name) ? prev.filter((t) => t !== name) : [...prev, name]
+    );
+  };
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
+    const finalSeriesName = seriesMode === "none" ? null : seriesName.trim() || null;
     onSubmit({
       title,
       author,
@@ -79,8 +102,9 @@ export function BookFormDialog({ open, onOpenChange, onSubmit, editBook }: BookF
       genre: genre && genre !== "none" ? genre : null,
       notes: notes || null,
       rating: rating || null,
-      series_name: seriesName && seriesName !== "none" ? seriesName : null,
+      series_name: finalSeriesName,
       series_number: seriesNumber ? parseInt(seriesNumber) : null,
+      tropes: selectedTropes,
     });
     onOpenChange(false);
   };
@@ -103,7 +127,6 @@ export function BookFormDialog({ open, onOpenChange, onSubmit, editBook }: BookF
             </div>
           </div>
 
-          {/* Genre dropdown */}
           <div className="grid grid-cols-2 gap-4">
             <div className="space-y-2">
               <Label>Genre</Label>
@@ -122,28 +145,37 @@ export function BookFormDialog({ open, onOpenChange, onSubmit, editBook }: BookF
           </div>
 
           {/* Series */}
-          <div className="grid grid-cols-3 gap-4">
-            <div className="space-y-2 col-span-2">
-              <Label>Buchreihe</Label>
-              <Select value={seriesName} onValueChange={(v) => v === "__new__" ? setSeriesName("") : setSeriesName(v)}>
-                <SelectTrigger><SelectValue placeholder="Keine Reihe" /></SelectTrigger>
-                <SelectContent>
-                  <SelectItem value="none">Keine Reihe</SelectItem>
-                  {seriesNames.map((s) => <SelectItem key={s} value={s}>{s}</SelectItem>)}
-                </SelectContent>
-              </Select>
-              {/* Allow free text input if not selecting existing */}
-              <Input
-                value={seriesName === "none" ? "" : seriesName}
-                onChange={(e) => setSeriesName(e.target.value)}
-                placeholder="Oder neuen Namen eingeben..."
-                className="mt-1"
-              />
-            </div>
-            <div className="space-y-2">
-              <Label htmlFor="seriesNum">Band Nr.</Label>
-              <Input id="seriesNum" type="number" min="1" value={seriesNumber} onChange={(e) => setSeriesNumber(e.target.value)} placeholder="1" />
-            </div>
+          <div className="space-y-2">
+            <Label>Buchreihe</Label>
+            <Select value={seriesMode} onValueChange={(v) => { setSeriesMode(v as any); if (v === "none") { setSeriesName(""); setSeriesNumber(""); } }}>
+              <SelectTrigger><SelectValue /></SelectTrigger>
+              <SelectContent>
+                <SelectItem value="none">Keine Reihe</SelectItem>
+                <SelectItem value="existing">Bestehende Reihe</SelectItem>
+                <SelectItem value="new">Neue Reihe</SelectItem>
+              </SelectContent>
+            </Select>
+            {seriesMode === "existing" && (
+              <div className="grid grid-cols-3 gap-2 mt-2">
+                <div className="col-span-2">
+                  <Select value={seriesName} onValueChange={setSeriesName}>
+                    <SelectTrigger><SelectValue placeholder="Reihe wählen" /></SelectTrigger>
+                    <SelectContent>
+                      {seriesNames.map((s) => <SelectItem key={s} value={s}>{s}</SelectItem>)}
+                    </SelectContent>
+                  </Select>
+                </div>
+                <Input type="number" min="1" value={seriesNumber} onChange={(e) => setSeriesNumber(e.target.value)} placeholder="Band" />
+              </div>
+            )}
+            {seriesMode === "new" && (
+              <div className="grid grid-cols-3 gap-2 mt-2">
+                <div className="col-span-2">
+                  <Input value={seriesName} onChange={(e) => setSeriesName(e.target.value)} placeholder="Name der neuen Reihe" />
+                </div>
+                <Input type="number" min="1" value={seriesNumber} onChange={(e) => setSeriesNumber(e.target.value)} placeholder="Band" />
+              </div>
+            )}
           </div>
 
           <div className="space-y-2">
@@ -154,6 +186,28 @@ export function BookFormDialog({ open, onOpenChange, onSubmit, editBook }: BookF
             <Label>Bewertung</Label>
             <RatingDisplay rating={rating} onChange={setRating} />
           </div>
+
+          {/* Tropes multi-select */}
+          {userTropes.length > 0 && (
+            <div className="space-y-2">
+              <Label>Tropes</Label>
+              <div className="flex flex-wrap gap-2 rounded-lg border p-3 max-h-32 overflow-y-auto subtle-scrollbar">
+                {userTropes.map((t) => (
+                  <label key={t.id} className={`flex items-center gap-1.5 cursor-pointer rounded-full px-3 py-1 text-xs font-medium transition-colors border ${
+                    selectedTropes.includes(t.name) ? "bg-primary text-primary-foreground border-primary" : "bg-secondary text-secondary-foreground hover:bg-accent"
+                  }`}>
+                    <Checkbox
+                      checked={selectedTropes.includes(t.name)}
+                      onCheckedChange={() => toggleTrope(t.name)}
+                      className="hidden"
+                    />
+                    {t.name}
+                  </label>
+                ))}
+              </div>
+            </div>
+          )}
+
           <div className="space-y-2">
             <Label htmlFor="notes">Notizen</Label>
             <Textarea id="notes" value={notes} onChange={(e) => setNotes(e.target.value)} placeholder="Deine Gedanken zum Buch..." rows={3} />

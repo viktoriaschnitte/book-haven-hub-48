@@ -5,6 +5,7 @@ import { Switch } from "@/components/ui/switch";
 import { useSettings } from "@/hooks/useSettings";
 import { Moon, Sun } from "lucide-react";
 import { GenreManager } from "./GenreManager";
+import { TropeManager } from "./TropeManager";
 
 const COLOR_PRESETS = [
   { label: "Bernstein", value: "24 70% 45%" },
@@ -72,6 +73,9 @@ export function SettingsDialog({ open, onOpenChange }: SettingsDialogProps) {
 
           {/* Genre management */}
           <GenreManager />
+
+          {/* Trope management */}
+          <TropeManager />
 
           {/* Color scheme */}
           <div className="space-y-3">
