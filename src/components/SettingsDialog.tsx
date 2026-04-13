@@ -1,11 +1,20 @@
+import { useState } from "react";
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
 import { Label } from "@/components/ui/label";
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 import { Switch } from "@/components/ui/switch";
+import { Button } from "@/components/ui/button";
 import { useSettings } from "@/hooks/useSettings";
-import { Moon, Sun } from "lucide-react";
+import { useAuth } from "@/hooks/useAuth";
+import { supabase } from "@/integrations/supabase/client";
+import { Moon, Sun, Trash2, AlertTriangle } from "lucide-react";
 import { GenreManager } from "./GenreManager";
 import { TropeManager } from "./TropeManager";
+import {
+  AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent,
+  AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle,
+} from "@/components/ui/alert-dialog";
+import { toast } from "sonner";
 
 const COLOR_PRESETS = [
   { label: "Bernstein", value: "24 70% 45%" },
@@ -29,10 +38,32 @@ interface SettingsDialogProps {
 
 export function SettingsDialog({ open, onOpenChange }: SettingsDialogProps) {
   const { settings, updateSettings } = useSettings();
+  const { user, signOut } = useAuth();
+  const [deleteConfirmOpen, setDeleteConfirmOpen] = useState(false);
+  const [deleting, setDeleting] = useState(false);
+
+  const handleDeleteAccount = async () => {
+    if (!user) return;
+    setDeleting(true);
+    try {
+      // Delete all user data in order
+      const tables = ["book_list_assignments", "books", "lists", "user_genres", "user_tropes", "user_settings", "profiles"] as const;
+      for (const table of tables) {
+        await supabase.from(table).delete().eq("user_id", user.id);
+      }
+      await signOut();
+      toast.success("Konto und alle Daten wurden gelöscht.");
+    } catch {
+      toast.error("Fehler beim Löschen des Kontos.");
+    } finally {
+      setDeleting(false);
+      setDeleteConfirmOpen(false);
+    }
+  };
 
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
-      <DialogContent className="sm:max-w-md">
+      <DialogContent className="sm:max-w-md max-h-[85vh] overflow-y-auto subtle-scrollbar">
         <DialogHeader>
           <DialogTitle className="font-display">Einstellungen</DialogTitle>
         </DialogHeader>
@@ -95,8 +126,41 @@ export function SettingsDialog({ open, onOpenChange }: SettingsDialogProps) {
               ))}
             </div>
           </div>
+
+          {/* Delete account */}
+          <div className="rounded-lg border border-destructive/30 p-4 space-y-3">
+            <Label className="text-base font-medium text-destructive">Gefahrenzone</Label>
+            <p className="text-xs text-muted-foreground">Dein Konto und alle zugehörigen Daten werden unwiderruflich gelöscht.</p>
+            <Button variant="destructive" size="sm" onClick={() => setDeleteConfirmOpen(true)}>
+              <Trash2 className="mr-2 h-4 w-4" /> Konto löschen
+            </Button>
+          </div>
         </div>
       </DialogContent>
+
+      <AlertDialog open={deleteConfirmOpen} onOpenChange={setDeleteConfirmOpen}>
+        <AlertDialogContent>
+          <AlertDialogHeader>
+            <AlertDialogTitle className="flex items-center gap-2">
+              <AlertTriangle className="h-5 w-5 text-destructive" />
+              Konto wirklich löschen?
+            </AlertDialogTitle>
+            <AlertDialogDescription>
+              Alle deine Bücher, Listen, Genres, Tropes und Einstellungen werden unwiderruflich gelöscht. Diese Aktion kann nicht rückgängig gemacht werden.
+            </AlertDialogDescription>
+          </AlertDialogHeader>
+          <AlertDialogFooter>
+            <AlertDialogCancel>Abbrechen</AlertDialogCancel>
+            <AlertDialogAction
+              onClick={handleDeleteAccount}
+              disabled={deleting}
+              className="bg-destructive text-destructive-foreground hover:bg-destructive/90"
+            >
+              {deleting ? "Wird gelöscht..." : "Endgültig löschen"}
+            </AlertDialogAction>
+          </AlertDialogFooter>
+        </AlertDialogContent>
+      </AlertDialog>
     </Dialog>
   );
 }
