@@ -62,6 +62,11 @@ export function BookDetailModal({ book, open, onOpenChange, onNavigate }: BookDe
                   {book.series_name}{book.series_number ? ` – Band ${book.series_number}` : ""}
                 </Badge>
               )}
+              {((book as any).tropes as string[] | undefined)?.map((trope) => (
+                <Badge key={trope} variant="secondary" className="bg-primary/10 text-primary">
+                  {trope}
+                </Badge>
+              ))}
             </div>
 
             {book.notes && (
