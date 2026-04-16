@@ -76,11 +76,11 @@ export default function Dashboard() {
         result = result.filter((b) => (b.rating ?? 0) === target);
       }
     }
-    if (filterTrope !== "all") {
-      result = result.filter((b) => b.tropes?.includes(filterTrope));
+    if (filterTropes.length > 0) {
+      result = result.filter((b) => filterTropes.every((t) => b.tropes?.includes(t)));
     }
     return result;
-  }, [books, search, filterGenre, filterList, filterRating, filterTrope, assignments]);
+  }, [books, search, filterGenre, filterList, filterRating, filterTropes, assignments]);
 
   const handleBookSubmit = (book: Parameters<typeof addBook.mutate>[0]) => {
     if (editingBook) {
