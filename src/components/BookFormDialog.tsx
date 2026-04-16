@@ -6,11 +6,14 @@ import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Checkbox } from "@/components/ui/checkbox";
+import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
+import { Command, CommandEmpty, CommandGroup, CommandInput, CommandItem, CommandList } from "@/components/ui/command";
 import { RatingDisplay } from "./RatingDisplay";
 import { Book, useBooks } from "@/hooks/useBooks";
 import { useGenres } from "@/hooks/useGenres";
 import { useTropes } from "@/hooks/useTropes";
-import { Save } from "lucide-react";
+import { Save, Check, ChevronsUpDown } from "lucide-react";
+import { cn } from "@/lib/utils";
 
 interface BookFormDialogProps {
   open: boolean;
@@ -46,6 +49,8 @@ export function BookFormDialog({ open, onOpenChange, onSubmit, editBook }: BookF
   const [seriesName, setSeriesName] = useState("");
   const [seriesNumber, setSeriesNumber] = useState("");
   const [selectedTropes, setSelectedTropes] = useState<string[]>([]);
+  const [seriesPopoverOpen, setSeriesPopoverOpen] = useState(false);
+  const [tropeSearch, setTropeSearch] = useState("");
 
   const allGenres = useMemo(() => userGenres.map((g) => g.name), [userGenres]);
 
@@ -54,6 +59,13 @@ export function BookFormDialog({ open, onOpenChange, onSubmit, editBook }: BookF
     books.forEach((b) => { if (b.series_name) set.add(b.series_name); });
     return Array.from(set).sort();
   }, [books]);
+
+  const filteredTropes = useMemo(() => {
+    if (!tropeSearch) return userTropes;
+    return userTropes.filter((t) =>
+      t.name.toLowerCase().includes(tropeSearch.toLowerCase())
+    );
+  }, [userTropes, tropeSearch]);
 
   useEffect(() => {
     if (editBook) {
@@ -82,6 +94,7 @@ export function BookFormDialog({ open, onOpenChange, onSubmit, editBook }: BookF
       setTitle(""); setAuthor(""); setPageCount(""); setCoverUrl("");
       setGenre(""); setNotes(""); setRating(0); setSeriesMode("none");
       setSeriesName(""); setSeriesNumber(""); setSelectedTropes([]);
+      setTropeSearch("");
     }
   }, [editBook, open]);
 
@@ -158,12 +171,56 @@ export function BookFormDialog({ open, onOpenChange, onSubmit, editBook }: BookF
             {seriesMode === "existing" && (
               <div className="grid grid-cols-3 gap-2 mt-2">
                 <div className="col-span-2">
-                  <Select value={seriesName} onValueChange={setSeriesName}>
-                    <SelectTrigger><SelectValue placeholder="Reihe wählen" /></SelectTrigger>
-                    <SelectContent>
-                      {seriesNames.map((s) => <SelectItem key={s} value={s}>{s}</SelectItem>)}
-                    </SelectContent>
-                  </Select>
+                  {seriesNames.length >= 5 ? (
+                    <Popover open={seriesPopoverOpen} onOpenChange={setSeriesPopoverOpen}>
+                      <PopoverTrigger asChild>
+                        <Button
+                          variant="outline"
+                          role="combobox"
+                          aria-expanded={seriesPopoverOpen}
+                          className="w-full justify-between"
+                        >
+                          {seriesName || "Reihe wählen"}
+                          <ChevronsUpDown className="ml-2 h-4 w-4 shrink-0 opacity-50" />
+                        </Button>
+                      </PopoverTrigger>
+                      <PopoverContent className="w-full p-0" align="start">
+                        <Command>
+                          <CommandInput placeholder="Reihe suchen..." />
+                          <CommandList>
+                            <CommandEmpty>Keine Reihe gefunden.</CommandEmpty>
+                            <CommandGroup>
+                              {seriesNames.map((s) => (
+                                <CommandItem
+                                  key={s}
+                                  value={s}
+                                  onSelect={(currentValue) => {
+                                    setSeriesName(currentValue);
+                                    setSeriesPopoverOpen(false);
+                                  }}
+                                >
+                                  <Check
+                                    className={cn(
+                                      "mr-2 h-4 w-4",
+                                      seriesName === s ? "opacity-100" : "opacity-0"
+                                    )}
+                                  />
+                                  {s}
+                                </CommandItem>
+                              ))}
+                            </CommandGroup>
+                          </CommandList>
+                        </Command>
+                      </PopoverContent>
+                    </Popover>
+                  ) : (
+                    <Select value={seriesName} onValueChange={setSeriesName}>
+                      <SelectTrigger><SelectValue placeholder="Reihe wählen" /></SelectTrigger>
+                      <SelectContent>
+                        {seriesNames.map((s) => <SelectItem key={s} value={s}>{s}</SelectItem>)}
+                      </SelectContent>
+                    </Select>
+                  )}
                 </div>
                 <Input type="number" min="1" value={seriesNumber} onChange={(e) => setSeriesNumber(e.target.value)} placeholder="Band" />
               </div>
@@ -191,19 +248,32 @@ export function BookFormDialog({ open, onOpenChange, onSubmit, editBook }: BookF
           {userTropes.length > 0 && (
             <div className="space-y-2">
               <Label>Tropes</Label>
-              <div className="flex flex-wrap gap-2 rounded-lg border p-3 max-h-32 overflow-y-auto subtle-scrollbar">
-                {userTropes.map((t) => (
-                  <label key={t.id} className={`flex items-center gap-1.5 cursor-pointer rounded-full px-3 py-1 text-xs font-medium transition-colors border ${
-                    selectedTropes.includes(t.name) ? "bg-primary text-primary-foreground border-primary" : "bg-secondary text-secondary-foreground hover:bg-accent"
-                  }`}>
-                    <Checkbox
-                      checked={selectedTropes.includes(t.name)}
-                      onCheckedChange={() => toggleTrope(t.name)}
-                      className="hidden"
-                    />
-                    {t.name}
-                  </label>
-                ))}
+              <div className="space-y-2">
+                <Input
+                  placeholder="Tropes durchsuchen..."
+                  value={tropeSearch}
+                  onChange={(e) => setTropeSearch(e.target.value)}
+                />
+                <div className="flex flex-wrap gap-2 rounded-lg border p-3 max-h-32 overflow-y-auto subtle-scrollbar">
+                  {filteredTropes.length > 0 ? (
+                    filteredTropes.map((t) => (
+                      <label key={t.id} className={`flex items-center gap-1.5 cursor-pointer rounded-full px-3 py-1 text-xs font-medium transition-colors border ${
+                        selectedTropes.includes(t.name) ? "bg-primary text-primary-foreground border-primary" : "bg-secondary text-secondary-foreground hover:bg-accent"
+                      }`}>
+                        <Checkbox
+                          checked={selectedTropes.includes(t.name)}
+                          onCheckedChange={() => toggleTrope(t.name)}
+                          className="hidden"
+                        />
+                        {t.name}
+                      </label>
+                    ))
+                  ) : (
+                    <p className="text-sm text-muted-foreground w-full text-center py-2">
+                      Keine Tropes gefunden
+                    </p>
+                  )}
+                </div>
               </div>
             </div>
           )}
