@@ -22,6 +22,7 @@ export default function Dashboard() {
   const { books, addBook, updateBook, deleteBook } = useBooks();
   const { lists, assignments, createList, deleteList } = useLists();
   const { settings } = useSettings();
+  const { tropes } = useTropes();
   const isStars = settings.rating_system === "stars";
   const maxRating = isStars ? 5 : 10;
 
@@ -30,6 +31,7 @@ export default function Dashboard() {
   const [filterGenre, setFilterGenre] = useState("all");
   const [filterList, setFilterList] = useState("all");
   const [filterRating, setFilterRating] = useState("all");
+  const [filterTrope, setFilterTrope] = useState("all");
 
   const [bookFormOpen, setBookFormOpen] = useState(false);
   const [editingBook, setEditingBook] = useState<Book | null>(null);
@@ -70,8 +72,11 @@ export default function Dashboard() {
         result = result.filter((b) => (b.rating ?? 0) === target);
       }
     }
+    if (filterTrope !== "all") {
+      result = result.filter((b) => b.tropes?.includes(filterTrope));
+    }
     return result;
-  }, [books, search, filterGenre, filterList, filterRating, assignments]);
+  }, [books, search, filterGenre, filterList, filterRating, filterTrope, assignments]);
 
   const handleBookSubmit = (book: Parameters<typeof addBook.mutate>[0]) => {
     if (editingBook) {
