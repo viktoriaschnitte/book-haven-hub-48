@@ -34,7 +34,8 @@ export default function Dashboard() {
   const [filterGenre, setFilterGenre] = useState("all");
   const [filterList, setFilterList] = useState("all");
   const [filterRating, setFilterRating] = useState("all");
-  const [filterTrope, setFilterTrope] = useState("all");
+  const [filterTropes, setFilterTropes] = useState<string[]>([]);
+  const [tropePopoverOpen, setTropePopoverOpen] = useState(false);
 
   const [bookFormOpen, setBookFormOpen] = useState(false);
   const [editingBook, setEditingBook] = useState<Book | null>(null);
