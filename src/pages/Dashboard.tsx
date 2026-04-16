@@ -13,8 +13,11 @@ import { CreateListDialog } from "@/components/CreateListDialog";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
+import { Badge } from "@/components/ui/badge";
+import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
+import { Command, CommandEmpty, CommandGroup, CommandInput, CommandItem, CommandList } from "@/components/ui/command";
 import {
-  BookOpen, Plus, Search, Grid3X3, List, Settings, LogOut, Trash2,
+  BookOpen, Plus, Search, Grid3X3, List, Settings, LogOut, Trash2, Check, ChevronsUpDown, X,
 } from "lucide-react";
 
 export default function Dashboard() {
