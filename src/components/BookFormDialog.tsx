@@ -61,11 +61,19 @@ export function BookFormDialog({ open, onOpenChange, onSubmit, editBook }: BookF
   }, [books]);
 
   const filteredTropes = useMemo(() => {
-    if (!tropeSearch) return userTropes;
-    return userTropes.filter((t) =>
-      t.name.toLowerCase().includes(tropeSearch.toLowerCase())
-    );
-  }, [userTropes, tropeSearch]);
+    let tropes = tropeSearch 
+      ? userTropes.filter((t) => t.name.toLowerCase().includes(tropeSearch.toLowerCase()))
+      : userTropes;
+    
+    // Sort: selected tropes first, then unselected ones
+    return tropes.sort((a, b) => {
+      const aSelected = selectedTropes.includes(a.name);
+      const bSelected = selectedTropes.includes(b.name);
+      if (aSelected && !bSelected) return -1;
+      if (!aSelected && bSelected) return 1;
+      return a.name.localeCompare(b.name);
+    });
+  }, [userTropes, tropeSearch, selectedTropes]);
 
   useEffect(() => {
     if (editBook) {
