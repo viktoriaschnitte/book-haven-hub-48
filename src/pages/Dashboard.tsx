@@ -13,8 +13,11 @@ import { CreateListDialog } from "@/components/CreateListDialog";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
+import { Badge } from "@/components/ui/badge";
+import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
+import { Command, CommandEmpty, CommandGroup, CommandInput, CommandItem, CommandList } from "@/components/ui/command";
 import {
-  BookOpen, Plus, Search, Grid3X3, List, Settings, LogOut, Trash2,
+  BookOpen, Plus, Search, Grid3X3, List, Settings, LogOut, Trash2, Check, ChevronsUpDown, X,
 } from "lucide-react";
 
 export default function Dashboard() {
@@ -31,7 +34,8 @@ export default function Dashboard() {
   const [filterGenre, setFilterGenre] = useState("all");
   const [filterList, setFilterList] = useState("all");
   const [filterRating, setFilterRating] = useState("all");
-  const [filterTrope, setFilterTrope] = useState("all");
+  const [filterTropes, setFilterTropes] = useState<string[]>([]);
+  const [tropePopoverOpen, setTropePopoverOpen] = useState(false);
 
   const [bookFormOpen, setBookFormOpen] = useState(false);
   const [editingBook, setEditingBook] = useState<Book | null>(null);
@@ -72,11 +76,11 @@ export default function Dashboard() {
         result = result.filter((b) => (b.rating ?? 0) === target);
       }
     }
-    if (filterTrope !== "all") {
-      result = result.filter((b) => b.tropes?.includes(filterTrope));
+    if (filterTropes.length > 0) {
+      result = result.filter((b) => filterTropes.every((t) => b.tropes?.includes(t)));
     }
     return result;
-  }, [books, search, filterGenre, filterList, filterRating, filterTrope, assignments]);
+  }, [books, search, filterGenre, filterList, filterRating, filterTropes, assignments]);
 
   const handleBookSubmit = (book: Parameters<typeof addBook.mutate>[0]) => {
     if (editingBook) {
@@ -148,13 +152,49 @@ export default function Dashboard() {
               </SelectContent>
             </Select>
             {tropes.length > 0 && (
-              <Select value={filterTrope} onValueChange={setFilterTrope}>
-                <SelectTrigger className="w-[140px]"><SelectValue placeholder="Trope" /></SelectTrigger>
-                <SelectContent>
-                  <SelectItem value="all">Alle Tropes</SelectItem>
-                  {tropes.map((t) => <SelectItem key={t.id} value={t.name}>{t.name}</SelectItem>)}
-                </SelectContent>
-              </Select>
+              <Popover open={tropePopoverOpen} onOpenChange={setTropePopoverOpen}>
+                <PopoverTrigger asChild>
+                  <Button variant="outline" className="w-[160px] justify-between h-9 px-3 text-sm font-normal">
+                    {filterTropes.length === 0
+                      ? "Tropes"
+                      : `${filterTropes.length} Trope${filterTropes.length > 1 ? "s" : ""}`}
+                    <ChevronsUpDown className="ml-1 h-3.5 w-3.5 shrink-0 opacity-50" />
+                  </Button>
+                </PopoverTrigger>
+                <PopoverContent className="w-[220px] p-0" align="start">
+                  <Command>
+                    <CommandInput placeholder="Trope suchen..." />
+                    <CommandList>
+                      <CommandEmpty>Kein Trope gefunden.</CommandEmpty>
+                      <CommandGroup>
+                        {tropes.map((t) => {
+                          const selected = filterTropes.includes(t.name);
+                          return (
+                            <CommandItem
+                              key={t.id}
+                              onSelect={() => {
+                                setFilterTropes((prev) =>
+                                  selected ? prev.filter((n) => n !== t.name) : [...prev, t.name]
+                                );
+                              }}
+                            >
+                              <Check className={`mr-2 h-4 w-4 ${selected ? "opacity-100" : "opacity-0"}`} />
+                              {t.name}
+                            </CommandItem>
+                          );
+                        })}
+                      </CommandGroup>
+                    </CommandList>
+                  </Command>
+                  {filterTropes.length > 0 && (
+                    <div className="border-t p-1">
+                      <Button variant="ghost" size="sm" className="w-full text-xs" onClick={() => setFilterTropes([])}>
+                        <X className="mr-1 h-3 w-3" /> Filter zurücksetzen
+                      </Button>
+                    </div>
+                  )}
+                </PopoverContent>
+              </Popover>
             )}
             <div className="flex rounded-lg border bg-card">
               <Button variant={view === "grid" ? "secondary" : "ghost"} size="icon" className="h-9 w-9 rounded-r-none" onClick={() => setView("grid")}>

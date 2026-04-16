@@ -128,9 +128,8 @@ export function SettingsDialog({ open, onOpenChange }: SettingsDialogProps) {
           </div>
 
           {/* Delete account */}
-          <div className="rounded-lg border border-destructive/30 p-4 space-y-3">
-            <Label className="text-base font-medium text-destructive">Gefahrenzone</Label>
-            <p className="text-xs text-muted-foreground">Dein Konto und alle zugehörigen Daten werden unwiderruflich gelöscht.</p>
+          <div className="pt-4 border-t">
+            <p className="text-xs text-muted-foreground mb-3">Dein Konto und alle zugehörigen Daten werden unwiderruflich gelöscht.</p>
             <Button variant="destructive" size="sm" onClick={() => setDeleteConfirmOpen(true)}>
               <Trash2 className="mr-2 h-4 w-4" /> Konto löschen
             </Button>
