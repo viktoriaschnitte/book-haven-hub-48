@@ -147,6 +147,15 @@ export default function Dashboard() {
                 })}
               </SelectContent>
             </Select>
+            {tropes.length > 0 && (
+              <Select value={filterTrope} onValueChange={setFilterTrope}>
+                <SelectTrigger className="w-[140px]"><SelectValue placeholder="Trope" /></SelectTrigger>
+                <SelectContent>
+                  <SelectItem value="all">Alle Tropes</SelectItem>
+                  {tropes.map((t) => <SelectItem key={t.id} value={t.name}>{t.name}</SelectItem>)}
+                </SelectContent>
+              </Select>
+            )}
             <div className="flex rounded-lg border bg-card">
               <Button variant={view === "grid" ? "secondary" : "ghost"} size="icon" className="h-9 w-9 rounded-r-none" onClick={() => setView("grid")}>
                 <Grid3X3 className="h-4 w-4" />
