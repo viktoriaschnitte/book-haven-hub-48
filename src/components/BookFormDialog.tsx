@@ -53,6 +53,7 @@ export function BookFormDialog({ open, onOpenChange, onSubmit, editBook }: BookF
   const [seriesName, setSeriesName] = useState("");
   const [seriesNumber, setSeriesNumber] = useState("");
   const [selectedTropes, setSelectedTropes] = useState<string[]>([]);
+  const [selectedListIds, setSelectedListIds] = useState<string[]>([]);
   const [seriesPopoverOpen, setSeriesPopoverOpen] = useState(false);
   const [tropeSearch, setTropeSearch] = useState("");
 
@@ -90,6 +91,7 @@ export function BookFormDialog({ open, onOpenChange, onSubmit, editBook }: BookF
       setRating(editBook.rating ?? 0);
       setSeriesNumber(editBook.series_number?.toString() ?? "");
       setSelectedTropes((editBook as any).tropes ?? []);
+      setSelectedListIds(assignments.filter((a) => a.book_id === editBook.id).map((a) => a.list_id));
       if (editBook.series_name) {
         if (seriesNames.includes(editBook.series_name)) {
           setSeriesMode("existing");
@@ -106,9 +108,10 @@ export function BookFormDialog({ open, onOpenChange, onSubmit, editBook }: BookF
       setTitle(""); setAuthor(""); setPageCount(""); setCoverUrl("");
       setGenre(""); setNotes(""); setRating(0); setSeriesMode("none");
       setSeriesName(""); setSeriesNumber(""); setSelectedTropes([]);
+      setSelectedListIds([]);
       setTropeSearch("");
     }
-  }, [editBook, open]);
+  }, [editBook, open, assignments]);
 
   const toggleTrope = (name: string) => {
     setSelectedTropes((prev) =>
