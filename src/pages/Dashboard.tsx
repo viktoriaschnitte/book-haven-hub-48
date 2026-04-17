@@ -23,7 +23,7 @@ import {
 export default function Dashboard() {
   const { user, signOut } = useAuth();
   const { books, addBook, updateBook, deleteBook } = useBooks();
-  const { lists, assignments, createList, deleteList } = useLists();
+  const { lists, assignments, createList, deleteList, assignBook, unassignBook } = useLists();
   const { settings } = useSettings();
   const { tropes } = useTropes();
   const isStars = settings.rating_system === "stars";
