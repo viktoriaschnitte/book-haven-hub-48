@@ -344,39 +344,6 @@ export function BookFormDialog({ open, onOpenChange, onSubmit, editBook }: BookF
             </div>
           </div>
 
-          {/* List assignment - visually separated */}
-          {lists.length > 0 && (
-            <div className="space-y-3 rounded-lg border-2 border-dashed border-primary/30 bg-accent/20 p-4 mt-2">
-              <div className="flex items-center justify-between">
-                <Label className="text-base font-medium">Listen-Zuweisung</Label>
-                <span className="text-xs text-muted-foreground">{selectedListIds.length} ausgewählt</span>
-              </div>
-              <div className="flex flex-wrap gap-2">
-                {lists.map((l) => {
-                  const checked = selectedListIds.includes(l.id);
-                  return (
-                    <button
-                      type="button"
-                      key={l.id}
-                      onClick={() =>
-                        setSelectedListIds((prev) =>
-                          checked ? prev.filter((id) => id !== l.id) : [...prev, l.id]
-                        )
-                      }
-                      className={`flex items-center gap-1.5 rounded-full px-3 py-1 text-xs font-medium transition-colors border ${
-                        checked
-                          ? "bg-primary text-primary-foreground border-primary"
-                          : "bg-secondary text-secondary-foreground hover:bg-accent"
-                      }`}
-                    >
-                      {checked && <Check className="h-3 w-3" />}
-                      {l.name}
-                    </button>
-                  );
-                })}
-              </div>
-            </div>
-          )}
           <div className="space-y-2">
             <Label htmlFor="notes">Notizen</Label>
             <Textarea id="notes" value={notes} onChange={(e) => setNotes(e.target.value)} placeholder="Deine Gedanken zum Buch..." rows={3} />
