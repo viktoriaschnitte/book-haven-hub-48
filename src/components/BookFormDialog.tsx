@@ -190,9 +190,20 @@ export function BookFormDialog({ open, onOpenChange, onSubmit, editBook }: BookF
               </Select>
             </div>
             <div className="space-y-2">
-              <Label htmlFor="pages">Seitenzahl</Label>
-              <Input id="pages" type="number" value={pageCount} onChange={(e) => setPageCount(e.target.value)} placeholder="320" />
+              <Label>Liste</Label>
+              <Select value={selectedListId} onValueChange={setSelectedListId}>
+                <SelectTrigger><SelectValue placeholder="Liste wählen" /></SelectTrigger>
+                <SelectContent>
+                  <SelectItem value="none">Keine Liste</SelectItem>
+                  {lists.map((l) => <SelectItem key={l.id} value={l.id}>{l.name}</SelectItem>)}
+                </SelectContent>
+              </Select>
             </div>
+          </div>
+
+          <div className="space-y-2">
+            <Label htmlFor="pages">Seitenzahl</Label>
+            <Input id="pages" type="number" value={pageCount} onChange={(e) => setPageCount(e.target.value)} placeholder="320" />
           </div>
 
           {/* Series */}
