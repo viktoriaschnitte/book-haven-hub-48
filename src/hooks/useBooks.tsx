@@ -26,8 +26,13 @@ export function useBooks() {
 
   const addBook = useMutation({
     mutationFn: async (book: Omit<BookInsert, "user_id">) => {
-      const { error } = await supabase.from("books").insert({ ...book, user_id: user!.id });
+      const { data, error } = await supabase
+        .from("books")
+        .insert({ ...book, user_id: user!.id })
+        .select()
+        .single();
       if (error) throw error;
+      return data;
     },
     onSuccess: () => qc.invalidateQueries({ queryKey: ["books"] }),
   });
