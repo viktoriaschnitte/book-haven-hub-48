@@ -332,8 +332,37 @@ export function BookFormDialog({ open, onOpenChange, onSubmit, editBook }: BookF
             </div>
           </div>
 
-          <div className="space-y-2">
-            <Label htmlFor="notes">Notizen</Label>
+          {/* List assignment */}
+          {lists.length > 0 && (
+            <div className="space-y-2">
+              <Label>Listen</Label>
+              <div className="flex flex-wrap gap-2 rounded-lg border p-3">
+                {lists.map((l) => {
+                  const checked = selectedListIds.includes(l.id);
+                  return (
+                    <button
+                      type="button"
+                      key={l.id}
+                      onClick={() =>
+                        setSelectedListIds((prev) =>
+                          checked ? prev.filter((id) => id !== l.id) : [...prev, l.id]
+                        )
+                      }
+                      className={`flex items-center gap-1.5 rounded-full px-3 py-1 text-xs font-medium transition-colors border ${
+                        checked
+                          ? "bg-primary text-primary-foreground border-primary"
+                          : "bg-secondary text-secondary-foreground hover:bg-accent"
+                      }`}
+                    >
+                      {checked && <Check className="h-3 w-3" />}
+                      {l.name}
+                    </button>
+                  );
+                })}
+              </div>
+            </div>
+          )}
+
             <Textarea id="notes" value={notes} onChange={(e) => setNotes(e.target.value)} placeholder="Deine Gedanken zum Buch..." rows={3} />
           </div>
           <Button type="submit" className="w-full">
