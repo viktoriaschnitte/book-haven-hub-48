@@ -31,12 +31,12 @@ interface BookCardProps {
   book: Book;
   onEdit: (book: Book) => void;
   onDelete: (id: string) => void;
-  onManageLists: (book: Book) => void;
+  onManageLists?: (book: Book) => void;
   onViewDetail: (book: Book) => void;
   view: "grid" | "list";
 }
 
-export function BookCard({ book, onEdit, onDelete, onManageLists, onViewDetail, view }: BookCardProps) {
+export function BookCard({ book, onEdit, onDelete, onViewDetail, view }: BookCardProps) {
   if (view === "list") {
     return (
       <div className="flex items-center gap-4 rounded-lg border bg-card p-3 transition-colors hover:bg-accent/50 animate-fade-in">
@@ -53,7 +53,6 @@ export function BookCard({ book, onEdit, onDelete, onManageLists, onViewDetail, 
           <DropdownMenuTrigger asChild><Button variant="ghost" size="icon" className="h-8 w-8"><MoreVertical className="h-4 w-4" /></Button></DropdownMenuTrigger>
           <DropdownMenuContent align="end">
             <DropdownMenuItem onClick={() => onEdit(book)}><Edit className="mr-2 h-4 w-4" /> Bearbeiten</DropdownMenuItem>
-            <DropdownMenuItem onClick={() => onManageLists(book)}>Listen verwalten</DropdownMenuItem>
             <DropdownMenuItem onClick={() => onDelete(book.id)} className="text-destructive"><Trash2 className="mr-2 h-4 w-4" /> Löschen</DropdownMenuItem>
           </DropdownMenuContent>
         </DropdownMenu>
@@ -75,7 +74,6 @@ export function BookCard({ book, onEdit, onDelete, onManageLists, onViewDetail, 
             <DropdownMenuTrigger asChild><Button variant="ghost" size="icon" className="h-7 w-7"><MoreVertical className="h-3.5 w-3.5" /></Button></DropdownMenuTrigger>
             <DropdownMenuContent align="end">
               <DropdownMenuItem onClick={() => onEdit(book)}><Edit className="mr-2 h-4 w-4" /> Bearbeiten</DropdownMenuItem>
-              <DropdownMenuItem onClick={() => onManageLists(book)}>Listen verwalten</DropdownMenuItem>
               <DropdownMenuItem onClick={() => onDelete(book.id)} className="text-destructive"><Trash2 className="mr-2 h-4 w-4" /> Löschen</DropdownMenuItem>
             </DropdownMenuContent>
           </DropdownMenu>
