@@ -362,7 +362,8 @@ export function BookFormDialog({ open, onOpenChange, onSubmit, editBook }: BookF
               </div>
             </div>
           )}
-
+          <div className="space-y-2">
+            <Label htmlFor="notes">Notizen</Label>
             <Textarea id="notes" value={notes} onChange={(e) => setNotes(e.target.value)} placeholder="Deine Gedanken zum Buch..." rows={3} />
           </div>
           <Button type="submit" className="w-full">
