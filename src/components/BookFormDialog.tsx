@@ -12,6 +12,7 @@ import { RatingDisplay } from "./RatingDisplay";
 import { Book, useBooks } from "@/hooks/useBooks";
 import { useGenres } from "@/hooks/useGenres";
 import { useTropes } from "@/hooks/useTropes";
+import { useLists } from "@/hooks/useLists";
 import { Save, Check, ChevronsUpDown, Plus } from "lucide-react";
 import { toast } from "sonner";
 import { cn } from "@/lib/utils";
