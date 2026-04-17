@@ -332,11 +332,14 @@ export function BookFormDialog({ open, onOpenChange, onSubmit, editBook }: BookF
             </div>
           </div>
 
-          {/* List assignment */}
+          {/* List assignment - visually separated */}
           {lists.length > 0 && (
-            <div className="space-y-2">
-              <Label>Listen</Label>
-              <div className="flex flex-wrap gap-2 rounded-lg border p-3">
+            <div className="space-y-3 rounded-lg border-2 border-dashed border-primary/30 bg-accent/20 p-4 mt-2">
+              <div className="flex items-center justify-between">
+                <Label className="text-base font-medium">Listen-Zuweisung</Label>
+                <span className="text-xs text-muted-foreground">{selectedListIds.length} ausgewählt</span>
+              </div>
+              <div className="flex flex-wrap gap-2">
                 {lists.map((l) => {
                   const checked = selectedListIds.includes(l.id);
                   return (
