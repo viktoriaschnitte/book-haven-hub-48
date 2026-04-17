@@ -63,13 +63,13 @@ export function SettingsDialog({ open, onOpenChange }: SettingsDialogProps) {
 
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
-      <DialogContent className="sm:max-w-md max-h-[85vh] overflow-y-auto subtle-scrollbar">
-        <DialogHeader>
+      <DialogContent className="sm:max-w-md max-h-[85vh] overflow-y-auto subtle-scrollbar p-8">
+        <DialogHeader className="mb-2">
           <DialogTitle className="font-display">Einstellungen</DialogTitle>
         </DialogHeader>
-        <div className="space-y-6">
+        <div className="space-y-8">
           {/* Dark Mode */}
-          <div className="flex items-center justify-between rounded-lg border p-4">
+          <div className="flex items-center justify-between rounded-lg border p-5">
             <div className="flex items-center gap-3">
               {settings.dark_mode ? <Moon className="h-5 w-5 text-primary" /> : <Sun className="h-5 w-5 text-primary" />}
               <div>
@@ -84,18 +84,18 @@ export function SettingsDialog({ open, onOpenChange }: SettingsDialogProps) {
           </div>
 
           {/* Rating system */}
-          <div className="space-y-3">
+          <div className="space-y-4 rounded-lg border p-5">
             <Label className="text-base font-medium">Bewertungssystem</Label>
             <RadioGroup
               value={settings.rating_system}
               onValueChange={(v) => updateSettings({ rating_system: v as "stars" | "points" })}
-              className="flex gap-4"
+              className="flex gap-3"
             >
-              <label className="flex items-center gap-2 cursor-pointer rounded-lg border p-3 flex-1 hover:bg-accent/50 transition-colors">
+              <label className="flex items-center gap-2 cursor-pointer rounded-lg border p-4 flex-1 hover:bg-accent/50 transition-colors">
                 <RadioGroupItem value="stars" />
                 <span className="text-sm font-medium">⭐ 1-5 Sterne</span>
               </label>
-              <label className="flex items-center gap-2 cursor-pointer rounded-lg border p-3 flex-1 hover:bg-accent/50 transition-colors">
+              <label className="flex items-center gap-2 cursor-pointer rounded-lg border p-4 flex-1 hover:bg-accent/50 transition-colors">
                 <RadioGroupItem value="points" />
                 <span className="text-sm font-medium">🔢 1-10 Punkte</span>
               </label>
@@ -103,15 +103,19 @@ export function SettingsDialog({ open, onOpenChange }: SettingsDialogProps) {
           </div>
 
           {/* Genre management */}
-          <GenreManager />
+          <div className="rounded-lg border p-5">
+            <GenreManager />
+          </div>
 
           {/* Trope management */}
-          <TropeManager />
+          <div className="rounded-lg border p-5">
+            <TropeManager />
+          </div>
 
           {/* Color scheme */}
-          <div className="space-y-3">
+          <div className="space-y-4 rounded-lg border p-5">
             <Label className="text-base font-medium">Farbschema</Label>
-            <div className="grid grid-cols-3 gap-2">
+            <div className="grid grid-cols-3 gap-3">
               {COLOR_PRESETS.map((color) => (
                 <button
                   key={color.value}
@@ -128,7 +132,7 @@ export function SettingsDialog({ open, onOpenChange }: SettingsDialogProps) {
           </div>
 
           {/* Delete account */}
-          <div className="pt-4 border-t">
+          <div className="rounded-lg border p-5">
             <p className="text-xs text-muted-foreground mb-3">Dein Konto und alle zugehörigen Daten werden unwiderruflich gelöscht.</p>
             <Button variant="destructive" size="sm" onClick={() => setDeleteConfirmOpen(true)}>
               <Trash2 className="mr-2 h-4 w-4" /> Konto löschen
