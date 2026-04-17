@@ -31,6 +31,7 @@ interface BookFormDialogProps {
     series_name: string | null;
     series_number: number | null;
     tropes: string[];
+    listIds: string[];
   }) => void;
   editBook?: Book | null;
 }
