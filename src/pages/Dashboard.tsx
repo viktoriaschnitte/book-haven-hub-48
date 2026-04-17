@@ -23,7 +23,7 @@ import {
 export default function Dashboard() {
   const { user, signOut } = useAuth();
   const { books, addBook, updateBook, deleteBook } = useBooks();
-  const { lists, assignments, createList, deleteList } = useLists();
+  const { lists, assignments, createList, deleteList, assignBook, unassignBook } = useLists();
   const { settings } = useSettings();
   const { tropes } = useTropes();
   const isStars = settings.rating_system === "stars";
@@ -82,11 +82,22 @@ export default function Dashboard() {
     return result;
   }, [books, search, filterGenre, filterList, filterRating, filterTropes, assignments]);
 
-  const handleBookSubmit = (book: Parameters<typeof addBook.mutate>[0]) => {
+  const handleBookSubmit = (book: Parameters<typeof addBook.mutate>[0] & { listIds: string[] }) => {
+    const { listIds, ...bookData } = book;
+    const syncLists = (bookId: string) => {
+      const current = assignments.filter((a) => a.book_id === bookId).map((a) => a.list_id);
+      listIds.filter((id) => !current.includes(id)).forEach((listId) => assignBook.mutate({ bookId, listId }));
+      current.filter((id) => !listIds.includes(id)).forEach((listId) => unassignBook.mutate({ bookId, listId }));
+    };
     if (editingBook) {
-      updateBook.mutate({ id: editingBook.id, ...book });
+      updateBook.mutate({ id: editingBook.id, ...bookData });
+      syncLists(editingBook.id);
     } else {
-      addBook.mutate(book);
+      addBook.mutate(bookData as any, {
+        onSuccess: (newBook: any) => {
+          if (newBook?.id) syncLists(newBook.id);
+        },
+      });
     }
     setEditingBook(null);
   };

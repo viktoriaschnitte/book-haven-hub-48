@@ -12,6 +12,7 @@ import { RatingDisplay } from "./RatingDisplay";
 import { Book, useBooks } from "@/hooks/useBooks";
 import { useGenres } from "@/hooks/useGenres";
 import { useTropes } from "@/hooks/useTropes";
+import { useLists } from "@/hooks/useLists";
 import { Save, Check, ChevronsUpDown, Plus } from "lucide-react";
 import { toast } from "sonner";
 import { cn } from "@/lib/utils";
@@ -30,6 +31,7 @@ interface BookFormDialogProps {
     series_name: string | null;
     series_number: number | null;
     tropes: string[];
+    listIds: string[];
   }) => void;
   editBook?: Book | null;
 }
@@ -37,6 +39,7 @@ interface BookFormDialogProps {
 export function BookFormDialog({ open, onOpenChange, onSubmit, editBook }: BookFormDialogProps) {
   const { genres: userGenres } = useGenres();
   const { tropes: userTropes, addTrope } = useTropes();
+  const { lists, assignments } = useLists();
   const { books } = useBooks();
 
   const [title, setTitle] = useState("");
@@ -50,6 +53,7 @@ export function BookFormDialog({ open, onOpenChange, onSubmit, editBook }: BookF
   const [seriesName, setSeriesName] = useState("");
   const [seriesNumber, setSeriesNumber] = useState("");
   const [selectedTropes, setSelectedTropes] = useState<string[]>([]);
+  const [selectedListIds, setSelectedListIds] = useState<string[]>([]);
   const [seriesPopoverOpen, setSeriesPopoverOpen] = useState(false);
   const [tropeSearch, setTropeSearch] = useState("");
 
@@ -87,6 +91,7 @@ export function BookFormDialog({ open, onOpenChange, onSubmit, editBook }: BookF
       setRating(editBook.rating ?? 0);
       setSeriesNumber(editBook.series_number?.toString() ?? "");
       setSelectedTropes((editBook as any).tropes ?? []);
+      setSelectedListIds(assignments.filter((a) => a.book_id === editBook.id).map((a) => a.list_id));
       if (editBook.series_name) {
         if (seriesNames.includes(editBook.series_name)) {
           setSeriesMode("existing");
@@ -103,9 +108,10 @@ export function BookFormDialog({ open, onOpenChange, onSubmit, editBook }: BookF
       setTitle(""); setAuthor(""); setPageCount(""); setCoverUrl("");
       setGenre(""); setNotes(""); setRating(0); setSeriesMode("none");
       setSeriesName(""); setSeriesNumber(""); setSelectedTropes([]);
+      setSelectedListIds([]);
       setTropeSearch("");
     }
-  }, [editBook, open]);
+  }, [editBook, open, assignments]);
 
   const toggleTrope = (name: string) => {
     setSelectedTropes((prev) =>
@@ -148,6 +154,7 @@ export function BookFormDialog({ open, onOpenChange, onSubmit, editBook }: BookF
       series_name: finalSeriesName,
       series_number: seriesNumber ? parseInt(seriesNumber) : null,
       tropes: selectedTropes,
+      listIds: selectedListIds,
     });
     onOpenChange(false);
   };
@@ -325,6 +332,36 @@ export function BookFormDialog({ open, onOpenChange, onSubmit, editBook }: BookF
             </div>
           </div>
 
+          {/* List assignment */}
+          {lists.length > 0 && (
+            <div className="space-y-2">
+              <Label>Listen</Label>
+              <div className="flex flex-wrap gap-2 rounded-lg border p-3">
+                {lists.map((l) => {
+                  const checked = selectedListIds.includes(l.id);
+                  return (
+                    <button
+                      type="button"
+                      key={l.id}
+                      onClick={() =>
+                        setSelectedListIds((prev) =>
+                          checked ? prev.filter((id) => id !== l.id) : [...prev, l.id]
+                        )
+                      }
+                      className={`flex items-center gap-1.5 rounded-full px-3 py-1 text-xs font-medium transition-colors border ${
+                        checked
+                          ? "bg-primary text-primary-foreground border-primary"
+                          : "bg-secondary text-secondary-foreground hover:bg-accent"
+                      }`}
+                    >
+                      {checked && <Check className="h-3 w-3" />}
+                      {l.name}
+                    </button>
+                  );
+                })}
+              </div>
+            </div>
+          )}
           <div className="space-y-2">
             <Label htmlFor="notes">Notizen</Label>
             <Textarea id="notes" value={notes} onChange={(e) => setNotes(e.target.value)} placeholder="Deine Gedanken zum Buch..." rows={3} />
