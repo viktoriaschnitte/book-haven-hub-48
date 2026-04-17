@@ -7,7 +7,7 @@ import { useTropes } from "@/hooks/useTropes";
 import { BookCard } from "@/components/BookCard";
 import { BookFormDialog } from "@/components/BookFormDialog";
 import { BookDetailModal } from "@/components/BookDetailModal";
-import { ListAssignDialog } from "@/components/ListAssignDialog";
+
 import { SettingsDialog } from "@/components/SettingsDialog";
 import { CreateListDialog } from "@/components/CreateListDialog";
 import { Button } from "@/components/ui/button";
@@ -40,7 +40,7 @@ export default function Dashboard() {
   const [bookFormOpen, setBookFormOpen] = useState(false);
   const [editingBook, setEditingBook] = useState<Book | null>(null);
   const [detailBook, setDetailBook] = useState<Book | null>(null);
-  const [listAssignBook, setListAssignBook] = useState<Book | null>(null);
+  
   const [settingsOpen, setSettingsOpen] = useState(false);
   const [createListOpen, setCreateListOpen] = useState(false);
 

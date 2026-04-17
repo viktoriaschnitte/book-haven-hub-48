@@ -31,12 +31,12 @@ interface BookCardProps {
   book: Book;
   onEdit: (book: Book) => void;
   onDelete: (id: string) => void;
-  onManageLists: (book: Book) => void;
+  onManageLists?: (book: Book) => void;
   onViewDetail: (book: Book) => void;
   view: "grid" | "list";
 }
 
-export function BookCard({ book, onEdit, onDelete, onManageLists, onViewDetail, view }: BookCardProps) {
+export function BookCard({ book, onEdit, onDelete, onViewDetail, view }: BookCardProps) {
   if (view === "list") {
     return (
       <div className="flex items-center gap-4 rounded-lg border bg-card p-3 transition-colors hover:bg-accent/50 animate-fade-in">
