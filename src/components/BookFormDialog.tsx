@@ -154,6 +154,7 @@ export function BookFormDialog({ open, onOpenChange, onSubmit, editBook }: BookF
       series_name: finalSeriesName,
       series_number: seriesNumber ? parseInt(seriesNumber) : null,
       tropes: selectedTropes,
+      listIds: selectedListIds,
     });
     onOpenChange(false);
   };
