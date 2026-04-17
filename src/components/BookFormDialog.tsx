@@ -39,6 +39,7 @@ interface BookFormDialogProps {
 export function BookFormDialog({ open, onOpenChange, onSubmit, editBook }: BookFormDialogProps) {
   const { genres: userGenres } = useGenres();
   const { tropes: userTropes, addTrope } = useTropes();
+  const { lists, assignments } = useLists();
   const { books } = useBooks();
 
   const [title, setTitle] = useState("");
