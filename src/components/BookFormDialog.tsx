@@ -253,16 +253,29 @@ export function BookFormDialog({ open, onOpenChange, onSubmit, editBook }: BookF
             <RatingDisplay rating={rating} onChange={setRating} />
           </div>
 
-          {/* Tropes multi-select */}
-          {userTropes.length > 0 && (
+          {/* Tropes multi-select with inline creation */}
+          <div className="space-y-2">
+            <Label>Tropes</Label>
             <div className="space-y-2">
-              <Label>Tropes</Label>
-              <div className="space-y-2">
+              <div className="flex gap-2">
                 <Input
-                  placeholder="Tropes durchsuchen..."
+                  placeholder="Suchen oder neuen Trope eingeben..."
                   value={tropeSearch}
                   onChange={(e) => setTropeSearch(e.target.value)}
+                  onKeyDown={(e) => {
+                    if (e.key === "Enter") {
+                      e.preventDefault();
+                      handleAddNewTrope();
+                    }
+                  }}
                 />
+                {tropeSearch.trim() && !userTropes.some((t) => t.name.toLowerCase() === tropeSearch.trim().toLowerCase()) && (
+                  <Button type="button" size="sm" onClick={handleAddNewTrope} disabled={addTrope.isPending}>
+                    <Plus className="h-4 w-4 mr-1" /> Neu
+                  </Button>
+                )}
+              </div>
+              {userTropes.length > 0 ? (
                 <div className="flex flex-wrap gap-2 rounded-lg border p-3 max-h-32 overflow-y-auto subtle-scrollbar">
                   {filteredTropes.length > 0 ? (
                     filteredTropes.map((t) => (
@@ -279,13 +292,17 @@ export function BookFormDialog({ open, onOpenChange, onSubmit, editBook }: BookF
                     ))
                   ) : (
                     <p className="text-sm text-muted-foreground w-full text-center py-2">
-                      Keine Tropes gefunden
+                      Keine Tropes gefunden – Enter drücken zum Erstellen
                     </p>
                   )}
                 </div>
-              </div>
+              ) : (
+                <p className="text-xs text-muted-foreground">
+                  Noch keine Tropes vorhanden. Tippe einen Namen ein und drücke Enter zum Erstellen.
+                </p>
+              )}
             </div>
-          )}
+          </div>
 
           <div className="space-y-2">
             <Label htmlFor="notes">Notizen</Label>
