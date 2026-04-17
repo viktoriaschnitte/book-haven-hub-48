@@ -113,6 +113,27 @@ export function BookFormDialog({ open, onOpenChange, onSubmit, editBook }: BookF
     );
   };
 
+  const handleAddNewTrope = () => {
+    const trimmed = tropeSearch.trim();
+    if (!trimmed) return;
+    const existing = userTropes.find((t) => t.name.toLowerCase() === trimmed.toLowerCase());
+    if (existing) {
+      if (!selectedTropes.includes(existing.name)) {
+        setSelectedTropes((prev) => [...prev, existing.name]);
+      }
+      setTropeSearch("");
+      return;
+    }
+    addTrope.mutate(trimmed, {
+      onSuccess: () => {
+        setSelectedTropes((prev) => [...prev, trimmed]);
+        setTropeSearch("");
+        toast.success(`Trope "${trimmed}" erstellt`);
+      },
+      onError: () => toast.error("Trope konnte nicht erstellt werden"),
+    });
+  };
+
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
     const finalSeriesName = seriesMode === "none" ? null : seriesName.trim() || null;
