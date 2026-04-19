@@ -80,6 +80,17 @@ export function BookFormDialog({ open, onOpenChange, onSubmit, editBook }: BookF
     });
   }, [userTropes, tropeSearch, selectedTropes]);
 
+  // Sort lists: selected first (in selection order), then unselected alphabetically
+  const sortedLists = useMemo(() => {
+    return [...lists].sort((a, b) => {
+      const aSelected = selectedListIds.includes(a.id);
+      const bSelected = selectedListIds.includes(b.id);
+      if (aSelected && !bSelected) return -1;
+      if (!aSelected && bSelected) return 1;
+      return a.name.localeCompare(b.name);
+    });
+  }, [lists, selectedListIds]);
+
   useEffect(() => {
     if (editBook) {
       setTitle(editBook.title);
@@ -193,7 +204,7 @@ export function BookFormDialog({ open, onOpenChange, onSubmit, editBook }: BookF
               <Label>Listen</Label>
               {lists.length > 0 ? (
                 <div className="flex flex-wrap gap-2 rounded-lg border p-3 max-h-32 overflow-y-auto subtle-scrollbar">
-                  {lists.map((l) => {
+                  {sortedLists.map((l) => {
                     const checked = selectedListIds.includes(l.id);
                     return (
                       <button
