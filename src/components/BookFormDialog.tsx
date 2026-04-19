@@ -92,7 +92,7 @@ export function BookFormDialog({ open, onOpenChange, onSubmit, editBook }: BookF
       setSeriesNumber(editBook.series_number?.toString() ?? "");
       setSelectedTropes((editBook as any).tropes ?? []);
       const currentLists = assignments.filter((a) => a.book_id === editBook.id).map((a) => a.list_id);
-      setSelectedListId(currentLists[0] ?? "none");
+      setSelectedListIds(currentLists);
       if (editBook.series_name) {
         if (seriesNames.includes(editBook.series_name)) {
           setSeriesMode("existing");
