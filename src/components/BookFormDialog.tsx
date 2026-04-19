@@ -53,7 +53,7 @@ export function BookFormDialog({ open, onOpenChange, onSubmit, editBook }: BookF
   const [seriesName, setSeriesName] = useState("");
   const [seriesNumber, setSeriesNumber] = useState("");
   const [selectedTropes, setSelectedTropes] = useState<string[]>([]);
-  const [selectedListId, setSelectedListId] = useState<string>("none");
+  const [selectedListIds, setSelectedListIds] = useState<string[]>([]);
   const [seriesPopoverOpen, setSeriesPopoverOpen] = useState(false);
   const [tropeSearch, setTropeSearch] = useState("");
 
@@ -92,7 +92,7 @@ export function BookFormDialog({ open, onOpenChange, onSubmit, editBook }: BookF
       setSeriesNumber(editBook.series_number?.toString() ?? "");
       setSelectedTropes((editBook as any).tropes ?? []);
       const currentLists = assignments.filter((a) => a.book_id === editBook.id).map((a) => a.list_id);
-      setSelectedListId(currentLists[0] ?? "none");
+      setSelectedListIds(currentLists);
       if (editBook.series_name) {
         if (seriesNames.includes(editBook.series_name)) {
           setSeriesMode("existing");
@@ -109,7 +109,7 @@ export function BookFormDialog({ open, onOpenChange, onSubmit, editBook }: BookF
       setTitle(""); setAuthor(""); setPageCount(""); setCoverUrl("");
       setGenre(""); setNotes(""); setRating(0); setSeriesMode("none");
       setSeriesName(""); setSeriesNumber(""); setSelectedTropes([]);
-      setSelectedListId("none");
+      setSelectedListIds([]);
       setTropeSearch("");
     }
   }, [editBook, open, assignments]);
@@ -155,7 +155,7 @@ export function BookFormDialog({ open, onOpenChange, onSubmit, editBook }: BookF
       series_name: finalSeriesName,
       series_number: seriesNumber ? parseInt(seriesNumber) : null,
       tropes: selectedTropes,
-      listIds: selectedListId !== "none" ? [selectedListId] : [],
+      listIds: selectedListIds,
     });
     onOpenChange(false);
   };
@@ -190,14 +190,35 @@ export function BookFormDialog({ open, onOpenChange, onSubmit, editBook }: BookF
               </Select>
             </div>
             <div className="space-y-2">
-              <Label>Liste</Label>
-              <Select value={selectedListId} onValueChange={setSelectedListId}>
-                <SelectTrigger><SelectValue placeholder="Liste wählen" /></SelectTrigger>
-                <SelectContent>
-                  <SelectItem value="none">Keine Liste</SelectItem>
-                  {lists.map((l) => <SelectItem key={l.id} value={l.id}>{l.name}</SelectItem>)}
-                </SelectContent>
-              </Select>
+              <Label>Listen</Label>
+              {lists.length > 0 ? (
+                <div className="flex flex-wrap gap-2 rounded-lg border p-3 max-h-32 overflow-y-auto subtle-scrollbar">
+                  {lists.map((l) => {
+                    const checked = selectedListIds.includes(l.id);
+                    return (
+                      <button
+                        type="button"
+                        key={l.id}
+                        onClick={() =>
+                          setSelectedListIds((prev) =>
+                            checked ? prev.filter((id) => id !== l.id) : [...prev, l.id]
+                          )
+                        }
+                        className={`flex items-center gap-1.5 rounded-full px-3 py-1 text-xs font-medium transition-colors border ${
+                          checked
+                            ? "bg-primary text-primary-foreground border-primary"
+                            : "bg-secondary text-secondary-foreground hover:bg-accent"
+                        }`}
+                      >
+                        {checked && <Check className="h-3 w-3" />}
+                        {l.name}
+                      </button>
+                    );
+                  })}
+                </div>
+              ) : (
+                <p className="text-xs text-muted-foreground">Noch keine Listen vorhanden.</p>
+              )}
             </div>
           </div>
 
