@@ -204,7 +204,7 @@ export function BookFormDialog({ open, onOpenChange, onSubmit, editBook }: BookF
               <Label>Listen</Label>
               {lists.length > 0 ? (
                 <div className="flex flex-wrap gap-2 rounded-lg border p-3 max-h-32 overflow-y-auto subtle-scrollbar">
-                  {lists.map((l) => {
+                  {sortedLists.map((l) => {
                     const checked = selectedListIds.includes(l.id);
                     return (
                       <button
