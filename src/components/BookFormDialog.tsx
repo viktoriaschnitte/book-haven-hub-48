@@ -53,7 +53,7 @@ export function BookFormDialog({ open, onOpenChange, onSubmit, editBook }: BookF
   const [seriesName, setSeriesName] = useState("");
   const [seriesNumber, setSeriesNumber] = useState("");
   const [selectedTropes, setSelectedTropes] = useState<string[]>([]);
-  const [selectedListId, setSelectedListId] = useState<string>("none");
+  const [selectedListIds, setSelectedListIds] = useState<string[]>([]);
   const [seriesPopoverOpen, setSeriesPopoverOpen] = useState(false);
   const [tropeSearch, setTropeSearch] = useState("");
 
