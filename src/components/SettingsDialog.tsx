@@ -84,6 +84,28 @@ export function SettingsDialog({ open, onOpenChange }: SettingsDialogProps) {
             />
           </div>
 
+          {/* Sort order */}
+          <div className="space-y-3 rounded-lg border p-5">
+            <div className="flex items-center gap-3">
+              <ArrowUpDown className="h-5 w-5 text-primary" />
+              <div>
+                <Label className="text-base font-medium">Standard-Sortierung</Label>
+                <p className="text-xs text-muted-foreground">Wie deine Bücher angezeigt werden</p>
+              </div>
+            </div>
+            <Select
+              value={settings.sort_order}
+              onValueChange={(v) => updateSettings({ sort_order: v as SortOrder })}
+            >
+              <SelectTrigger><SelectValue /></SelectTrigger>
+              <SelectContent>
+                <SelectItem value="created_desc">Neueste zuerst</SelectItem>
+                <SelectItem value="title_asc">Alphabetisch (A-Z)</SelectItem>
+                <SelectItem value="series">Nach Buchreihe</SelectItem>
+              </SelectContent>
+            </Select>
+          </div>
+
           {/* Rating system */}
           <div className="space-y-4 rounded-lg border p-5">
             <Label className="text-base font-medium">Bewertungssystem</Label>
