@@ -4,10 +4,11 @@ import { Label } from "@/components/ui/label";
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 import { Switch } from "@/components/ui/switch";
 import { Button } from "@/components/ui/button";
-import { useSettings } from "@/hooks/useSettings";
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
+import { useSettings, SortOrder } from "@/hooks/useSettings";
 import { useAuth } from "@/hooks/useAuth";
 import { supabase } from "@/integrations/supabase/client";
-import { Moon, Sun, Trash2, AlertTriangle } from "lucide-react";
+import { Moon, Sun, Trash2, AlertTriangle, ArrowUpDown } from "lucide-react";
 import { GenreManager } from "./GenreManager";
 import { TropeManager } from "./TropeManager";
 import {
