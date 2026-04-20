@@ -179,6 +179,7 @@ export type Database = {
           id: string
           primary_color: string
           rating_system: string
+          sort_order: string
           updated_at: string
           user_id: string
         }
@@ -187,6 +188,7 @@ export type Database = {
           id?: string
           primary_color?: string
           rating_system?: string
+          sort_order?: string
           updated_at?: string
           user_id: string
         }
@@ -195,6 +197,7 @@ export type Database = {
           id?: string
           primary_color?: string
           rating_system?: string
+          sort_order?: string
           updated_at?: string
           user_id?: string
         }
