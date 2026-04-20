@@ -2,10 +2,13 @@ import { createContext, useContext, useEffect, useState, ReactNode, useCallback 
 import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "./useAuth";
 
+export type SortOrder = "title_asc" | "series" | "created_desc";
+
 interface Settings {
   rating_system: "stars" | "points";
   primary_color: string;
   dark_mode: boolean;
+  sort_order: SortOrder;
 }
 
 interface SettingsContextType {
@@ -18,6 +21,7 @@ const defaultSettings: Settings = {
   rating_system: "stars",
   primary_color: "24 70% 45%",
   dark_mode: false,
+  sort_order: "created_desc",
 };
 
 const SettingsContext = createContext<SettingsContextType | undefined>(undefined);
@@ -44,6 +48,7 @@ export function SettingsProvider({ children }: { children: ReactNode }) {
             rating_system: data.rating_system as "stars" | "points",
             primary_color: data.primary_color,
             dark_mode: savedDark !== null ? savedDark === "true" : false,
+            sort_order: ((data as any).sort_order as SortOrder) ?? "created_desc",
           });
         }
         setLoading(false);
@@ -73,7 +78,7 @@ export function SettingsProvider({ children }: { children: ReactNode }) {
     if (user) {
       await supabase
         .from("user_settings")
-        .update({ rating_system: next.rating_system, primary_color: next.primary_color })
+        .update({ rating_system: next.rating_system, primary_color: next.primary_color, sort_order: next.sort_order } as any)
         .eq("user_id", user.id);
     }
   }, [settings, user]);

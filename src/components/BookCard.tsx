@@ -34,9 +34,10 @@ interface BookCardProps {
   onManageLists?: (book: Book) => void;
   onViewDetail: (book: Book) => void;
   view: "grid" | "list";
+  showSeries?: boolean;
 }
 
-export function BookCard({ book, onEdit, onDelete, onViewDetail, view }: BookCardProps) {
+export function BookCard({ book, onEdit, onDelete, onViewDetail, view, showSeries }: BookCardProps) {
   if (view === "list") {
     return (
       <div className="flex items-center gap-4 rounded-lg border bg-card p-3 transition-colors hover:bg-accent/50 animate-fade-in">
@@ -62,8 +63,16 @@ export function BookCard({ book, onEdit, onDelete, onViewDetail, view }: BookCar
 
   return (
     <div className="group relative overflow-hidden rounded-lg border bg-card book-shadow hover:book-shadow-hover transition-all duration-300 animate-fade-in">
-      <button onClick={() => onViewDetail(book)} className="aspect-[2/3] w-full overflow-hidden bg-muted cursor-pointer block">
+      <button onClick={() => onViewDetail(book)} className="relative aspect-[2/3] w-full overflow-hidden bg-muted cursor-pointer block">
         <BookCover url={book.cover_url} title={book.title} className="transition-transform duration-300 group-hover:scale-105" />
+        {showSeries && book.series_name && (
+          <div className="absolute bottom-0 left-0 right-0 bg-gradient-to-t from-black/80 to-transparent px-2 py-1.5 text-left">
+            <p className="text-[10px] font-medium text-white/95 truncate leading-tight">{book.series_name}</p>
+            {book.series_number != null && (
+              <p className="text-[10px] text-white/75 leading-tight">Band {book.series_number}</p>
+            )}
+          </div>
+        )}
       </button>
       <div className="p-3 space-y-1.5">
         <h3 className="font-display font-semibold text-sm leading-tight truncate">{book.title}</h3>

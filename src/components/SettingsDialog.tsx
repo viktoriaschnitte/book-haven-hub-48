@@ -4,10 +4,11 @@ import { Label } from "@/components/ui/label";
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 import { Switch } from "@/components/ui/switch";
 import { Button } from "@/components/ui/button";
-import { useSettings } from "@/hooks/useSettings";
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
+import { useSettings, SortOrder } from "@/hooks/useSettings";
 import { useAuth } from "@/hooks/useAuth";
 import { supabase } from "@/integrations/supabase/client";
-import { Moon, Sun, Trash2, AlertTriangle } from "lucide-react";
+import { Moon, Sun, Trash2, AlertTriangle, ArrowUpDown } from "lucide-react";
 import { GenreManager } from "./GenreManager";
 import { TropeManager } from "./TropeManager";
 import {
@@ -81,6 +82,28 @@ export function SettingsDialog({ open, onOpenChange }: SettingsDialogProps) {
               checked={settings.dark_mode}
               onCheckedChange={(v) => updateSettings({ dark_mode: v })}
             />
+          </div>
+
+          {/* Sort order */}
+          <div className="space-y-3 rounded-lg border p-5">
+            <div className="flex items-center gap-3">
+              <ArrowUpDown className="h-5 w-5 text-primary" />
+              <div>
+                <Label className="text-base font-medium">Standard-Sortierung</Label>
+                <p className="text-xs text-muted-foreground">Wie deine Bücher angezeigt werden</p>
+              </div>
+            </div>
+            <Select
+              value={settings.sort_order}
+              onValueChange={(v) => updateSettings({ sort_order: v as SortOrder })}
+            >
+              <SelectTrigger><SelectValue /></SelectTrigger>
+              <SelectContent>
+                <SelectItem value="created_desc">Neueste zuerst</SelectItem>
+                <SelectItem value="title_asc">Alphabetisch (A-Z)</SelectItem>
+                <SelectItem value="series">Nach Buchreihe</SelectItem>
+              </SelectContent>
+            </Select>
           </div>
 
           {/* Rating system */}

@@ -80,7 +80,34 @@ export default function Dashboard() {
       result = result.filter((b) => filterTropes.every((t) => b.tropes?.includes(t)));
     }
     return result;
-  }, [books, search, filterGenre, filterList, filterRating, filterTropes, assignments]);
+  }, [books, search, filterGenre, filterList, filterRating, filterTropes, assignments, isStars]);
+
+  const sorted = useMemo(() => {
+    const arr = [...filtered];
+    switch (settings.sort_order) {
+      case "title_asc":
+        arr.sort((a, b) => a.title.localeCompare(b.title));
+        break;
+      case "series":
+        arr.sort((a, b) => {
+          const aHas = !!a.series_name;
+          const bHas = !!b.series_name;
+          if (aHas && !bHas) return -1;
+          if (!aHas && bHas) return 1;
+          if (aHas && bHas) {
+            const s = a.series_name!.localeCompare(b.series_name!);
+            if (s !== 0) return s;
+            return (a.series_number ?? 0) - (b.series_number ?? 0);
+          }
+          return a.title.localeCompare(b.title);
+        });
+        break;
+      case "created_desc":
+      default:
+        arr.sort((a, b) => new Date(b.created_at).getTime() - new Date(a.created_at).getTime());
+    }
+    return arr;
+  }, [filtered, settings.sort_order]);
 
   const handleBookSubmit = (book: Parameters<typeof addBook.mutate>[0] & { listIds: string[] }) => {
     const { listIds, ...bookData } = book;
@@ -244,7 +271,7 @@ export default function Dashboard() {
         </div>
 
         {/* Books */}
-        {filtered.length === 0 ? (
+        {sorted.length === 0 ? (
           <div className="flex flex-col items-center justify-center py-20 text-center">
             <BookOpen className="h-16 w-16 text-muted-foreground/30 mb-4" />
             <h2 className="font-display text-xl font-semibold text-muted-foreground">Keine Bücher gefunden</h2>
@@ -252,13 +279,13 @@ export default function Dashboard() {
           </div>
         ) : view === "grid" ? (
           <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 xl:grid-cols-6 gap-4">
-            {filtered.map((book) => (
-              <BookCard key={book.id} book={book} view="grid" onEdit={(b) => { setEditingBook(b); setBookFormOpen(true); }} onDelete={(id) => deleteBook.mutate(id)} onViewDetail={setDetailBook} />
+            {sorted.map((book) => (
+              <BookCard key={book.id} book={book} view="grid" showSeries={settings.sort_order === "series"} onEdit={(b) => { setEditingBook(b); setBookFormOpen(true); }} onDelete={(id) => deleteBook.mutate(id)} onViewDetail={setDetailBook} />
             ))}
           </div>
         ) : (
           <div className="space-y-2">
-            {filtered.map((book) => (
+            {sorted.map((book) => (
               <BookCard key={book.id} book={book} view="list" onEdit={(b) => { setEditingBook(b); setBookFormOpen(true); }} onDelete={(id) => deleteBook.mutate(id)} onViewDetail={setDetailBook} />
             ))}
           </div>
