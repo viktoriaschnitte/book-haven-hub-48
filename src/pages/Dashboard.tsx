@@ -90,13 +90,13 @@ export default function Dashboard() {
         break;
       case "series":
         arr.sort((a, b) => {
-          const aHas = !!a.series_name;
-          const bHas = !!b.series_name;
-          if (aHas && !bHas) return -1;
-          if (!aHas && bHas) return 1;
-          if (aHas && bHas) {
-            const s = a.series_name!.localeCompare(b.series_name!);
-            if (s !== 0) return s;
+          // Use series_name for grouping; fall back to title for standalone books
+          const aKey = (a.series_name ?? a.title).toLowerCase();
+          const bKey = (b.series_name ?? b.title).toLowerCase();
+          const k = aKey.localeCompare(bKey);
+          if (k !== 0) return k;
+          // Same series: sort by volume number
+          if (a.series_name && b.series_name) {
             return (a.series_number ?? 0) - (b.series_number ?? 0);
           }
           return a.title.localeCompare(b.title);
