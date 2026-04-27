@@ -82,6 +82,34 @@ export default function Dashboard() {
     return result;
   }, [books, search, filterGenre, filterList, filterRating, filterTropes, assignments, isStars]);
 
+  const visibleCountsByListId = useMemo(() => {
+    let countableBooks = books;
+    if (search) {
+      const q = search.toLowerCase();
+      countableBooks = countableBooks.filter((b) => b.title.toLowerCase().includes(q) || b.author.toLowerCase().includes(q));
+    }
+    if (filterGenre !== "all") {
+      countableBooks = countableBooks.filter((b) => b.genre === filterGenre);
+    }
+    if (filterRating !== "all") {
+      const target = parseInt(filterRating);
+      countableBooks = isStars
+        ? countableBooks.filter((b) => {
+            const r = b.rating ?? 0;
+            return r >= (target - 1) * 2 + 1 && r <= target * 2;
+          })
+        : countableBooks.filter((b) => (b.rating ?? 0) === target);
+    }
+    if (filterTropes.length > 0) {
+      countableBooks = countableBooks.filter((b) => filterTropes.every((t) => b.tropes?.includes(t)));
+    }
+    const visibleBookIds = new Set(countableBooks.map((b) => b.id));
+    return lists.reduce<Record<string, number>>((counts, list) => {
+      counts[list.id] = assignments.filter((a) => a.list_id === list.id && visibleBookIds.has(a.book_id)).length;
+      return counts;
+    }, {});
+  }, [assignments, books, filterGenre, filterRating, filterTropes, isStars, lists, search]);
+
   const sorted = useMemo(() => {
     const arr = [...filtered];
     switch (settings.sort_order) {
@@ -256,7 +284,12 @@ export default function Dashboard() {
                   filterList === l.id ? "bg-primary text-primary-foreground" : "bg-secondary text-secondary-foreground hover:bg-accent"
                 }`}
               >
-                {l.name}
+                <span>{l.name}</span>
+                <Badge variant="secondary" className={`ml-2 min-w-6 justify-center rounded-full px-1.5 py-0 text-[11px] ${
+                  filterList === l.id ? "bg-primary-foreground/20 text-primary-foreground" : ""
+                }`}>
+                  {visibleCountsByListId[l.id] ?? 0}
+                </Badge>
               </button>
               {!l.is_default && (
                 <button onClick={() => deleteList.mutate(l.id)} className="text-muted-foreground hover:text-destructive">

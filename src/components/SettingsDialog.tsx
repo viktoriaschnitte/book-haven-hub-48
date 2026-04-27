@@ -11,6 +11,7 @@ import { supabase } from "@/integrations/supabase/client";
 import { Moon, Sun, Trash2, AlertTriangle, ArrowUpDown } from "lucide-react";
 import { GenreManager } from "./GenreManager";
 import { TropeManager } from "./TropeManager";
+import { ListManager } from "./ListManager";
 import {
   AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent,
   AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle,
@@ -133,6 +134,11 @@ export function SettingsDialog({ open, onOpenChange }: SettingsDialogProps) {
           {/* Trope management */}
           <div className="rounded-lg border p-5">
             <TropeManager />
+          </div>
+
+          {/* List management */}
+          <div className="rounded-lg border p-5">
+            <ListManager />
           </div>
 
           {/* Color scheme */}
