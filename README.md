@@ -1,73 +1,45 @@
-# Welcome to your Lovable project
+Mein Buch-Tracker
 
-## Project info
+Willkommen bei deinem persönlichen Buch-Tracking-System! Diese App hilft dir dabei, deine private Bibliothek zu verwalten, gelesene Bücher zu bewerten und deine Wunschliste im Auge zu behalten.
 
-**URL**: https://lovable.dev/projects/REPLACE_WITH_PROJECT_ID
+ Erste Schritte
 
-## How can I edit this code?
+ 1. Account & Einstellungen
+* **Anmeldung:** Melde dich über das Login-Fenster an.Der Test Account Login lautet (test@test.com Passwort:12345678)* **Design anpassen:** Gehe in die **Einstellungen**, um die Primärfarbe der App zu wählen oder den **Dark Mode** zu aktivieren.
+* **Bewertungssystem:** Wähle in den Einstellungen zwischen dem **5-Sterne** oder **1-10 Punkte** System. 
 
-There are several ways of editing your application.
+ 2. Genres & Tropes vorbereiten
+Bevor du Bücher hinzufügst, solltest du in den Einstellungen deine bevorzugten Kategorien definieren:
+* **Genres:** Lege fest, welche Genres (z.B. Fantasy, Krimi) du nutzt. Nur diese erscheinen später im Auswahlmenü.
+* **Tropes:** Füge typische Buch-Elemente hinzu (z.B. *Enemies to Lovers*). Diese kannst du später mehrfach einem Buch zuordnen.
 
-**Use Lovable**
+---
 
-Simply visit the [Lovable Project](https://lovable.dev/projects/REPLACE_WITH_PROJECT_ID) and start prompting.
+ Bücher verwalten
 
-Changes made via Lovable will be committed automatically to this repo.
+### 1. Ein Buch hinzufügen
+Klicke auf den Button **"Neues Buch hinzufügen"**. Es öffnet sich ein Formular:
+1. **Basis-Infos:** Gib Titel, Autor und Seitenzahl ein.
+2. **Cover:** Füge eine Bild-URL ein. Falls das Bild nicht lädt, wird automatisch ein Platzhalter angezeigt.
+3. **Listen-Zuweisung:** Kreuze direkt im Formular an, in welche Listen das Buch soll (z.B. "Zuhause" und "Gelesen"). Die ausgewählten Listen rutschen automatisch nach oben.
+4. **Reihen:** Falls das Buch Teil einer Serie ist, wähle eine Reihe aus oder erstelle eine neue. Gib die Band-Nummer an.
+5. **Tropes:** Wähle passende Tropes aus oder erstelle neue (Hinweis: Löschen von Tropes geht nur in den Haupteinstellungen).
 
-**Use your preferred IDE**
+### 2. Suchen & Filtern
+* **Suche:** Nutze die Suchleiste oben, um nach Titeln oder Autoren zu suchen.
+* **Filter:** Nutze die Dropdowns für Genre oder Tropes.
+* **Sortierung:** In den Einstellungen kannst du wählen, ob deine Listen nach **Titel**, **Hinzufügedatum** oder **Buchreihe** (Band 1, 2, 3...) sortiert werden sollen.
 
-If you want to work locally using your own IDE, you can clone this repo and push changes. Pushed changes will also be reflected in Lovable.
+### 3. Details & Bearbeiten
+* **Details:** Klicke auf ein Buchcover im Raster, um das **Detail-Modal** zu öffnen. Hier siehst du alle Infos und deine Notizen.
+* **Bearbeiten:** Klicke auf das Stift-Icon, um Infos zu ändern.
+* **Löschen:** Klicke auf das Mülleimer-Icon. Ein Sicherheitsfenster fragt dich zur Bestätigung, bevor das Buch gelöscht wird.
 
-The only requirement is having Node.js & npm installed - [install with nvm](https://github.com/nvm-sh/nvm#installing-and-updating)
+---
 
-Follow these steps:
+##  Features für Profis
+* **Listen-Counter:** Oben an jeder Liste siehst du in einem kleinen Badge, wie viele Bücher sich gerade darin befinden.
+* **Reihen-Suche:** Sobald du mehr als 5 Buchreihen angelegt hast, erscheint automatisch ein Suchfeld im Reihen-Auswahlmenü.
+* **Account:** In den Einstellungen kannst du dein komplettes Konto löschen. Alle deine Daten werden dann unwiderruflich aus der Datenbank entfernt.
 
-```sh
-# Step 1: Clone the repository using the project's Git URL.
-git clone <YOUR_GIT_URL>
-
-# Step 2: Navigate to the project directory.
-cd <YOUR_PROJECT_NAME>
-
-# Step 3: Install the necessary dependencies.
-npm i
-
-# Step 4: Start the development server with auto-reloading and an instant preview.
-npm run dev
-```
-
-**Edit a file directly in GitHub**
-
-- Navigate to the desired file(s).
-- Click the "Edit" button (pencil icon) at the top right of the file view.
-- Make your changes and commit the changes.
-
-**Use GitHub Codespaces**
-
-- Navigate to the main page of your repository.
-- Click on the "Code" button (green button) near the top right.
-- Select the "Codespaces" tab.
-- Click on "New codespace" to launch a new Codespace environment.
-- Edit files directly within the Codespace and commit and push your changes once you're done.
-
-## What technologies are used for this project?
-
-This project is built with:
-
-- Vite
-- TypeScript
-- React
-- shadcn-ui
-- Tailwind CSS
-
-## How can I deploy this project?
-
-Simply open [Lovable](https://lovable.dev/projects/REPLACE_WITH_PROJECT_ID) and click on Share -> Publish.
-
-## Can I connect a custom domain to my Lovable project?
-
-Yes, you can!
-
-To connect a domain, navigate to Project > Settings > Domains and click Connect Domain.
-
-Read more here: [Setting up a custom domain](https://docs.lovable.dev/features/custom-domain#custom-domain)
+Viel Spaß beim Tracken deiner Bücher!
